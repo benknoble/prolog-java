@@ -1,3 +1,4 @@
 #! /bin/sh
 
-exec java -classpath "lib/*:$CLASSPATH" org.antlr.v4.gui.TestRig "$@"
+make bin/prologParser.class &&
+exec java -classpath "lib/*:bin:$CLASSPATH" org.antlr.v4.gui.TestRig prolog "$@"
