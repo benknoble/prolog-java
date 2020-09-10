@@ -1,5 +1,6 @@
 .POSIX:
 SHELL = /bin/sh
+.SUFFIXES:
 .SUFFIXES: .java .class .g4
 
 DOWNLOAD = curl
