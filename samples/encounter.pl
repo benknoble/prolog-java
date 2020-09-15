@@ -1,4 +1,4 @@
-# vim: ft=prolog
+% vim: ft=prolog
 
 largeDuration(50).
 mediumDuration(15).
