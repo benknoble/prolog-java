@@ -10,6 +10,7 @@ largeExhalation(30).
 mediumExhalation(20).
 smallExhalation(10).
 
+% makes a table of the given safe values
 givenSafeTable(Table) :-
     largeDistance(LARGE_DISTANCE),
     largeDuration(LARGE_DURATION),
@@ -20,6 +21,7 @@ givenSafeTable(Table) :-
     smallDistance(SMALL_DISTANCE),
     smallDuration(SMALL_DURATION),
     smallExhalation(SMALL_EXHALATION),
+    % from the assignment
     Table = [
         [MEDIUM_DISTANCE, MEDIUM_DURATION, MEDIUM_EXHALATION],
         [MEDIUM_DISTANCE,   SMALL_DURATION, MEDIUM_EXHALATION],
@@ -29,6 +31,9 @@ givenSafeTable(Table) :-
         [LARGE_DISTANCE, LARGE_DURATION,  SMALL_EXHALATION]
     ].
 
+/* satisfies the isGivenSafe requirement by checking that the parameters are
+ * members of the table
+ */
 isGivenSafe(Distance, Duration, Exhalation) :-
     givenSafeTable(Table),
     member(Table, Distance, Duration, Exhalation).
@@ -37,8 +42,13 @@ inRange(X, Min, Max) :-
     X > Min,
     X =< Max.
 
+% member([H|T],X) is true if H unifies with X
+% or if member(T, X) is true
 member([[Distance, Duration, Exhalation]|_], Distance, Duration, Exhalation).
 member([_|T], Distance, Duration, Exhalation) :-
+    /*
+     * recurse
+     */
     member(T, Distance, Duration, Exhalation).
 
 minInterpolatedValue(0).
