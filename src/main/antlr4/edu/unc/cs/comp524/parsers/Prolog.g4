@@ -32,6 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Prolog;
 
+@lexer::members {
+public static final int COMMENTCH = 1;
+}
 
 // Prolog text and data formed from terms (6.2)
 
@@ -176,5 +179,6 @@ WS
    : [ \t\r\n]+ -> skip
    ;
 
-COMMENT: '%' ~[\n\r]* ( [\n\r] | EOF) -> channel(HIDDEN) ;
-MULTILINE_COMMENT: '/*' ( MULTILINE_COMMENT | . )*? ('*/' | EOF) -> channel(HIDDEN);
+// see COMMENTCH
+COMMENT: '%' ~[\n\r]* ( [\n\r] | EOF) -> channel(1) ;
+MULTILINE_COMMENT: '/*' ( MULTILINE_COMMENT | . )*? ('*/' | EOF) -> channel(1);
