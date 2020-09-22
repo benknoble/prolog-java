@@ -1,0 +1,15 @@
+#! /bin/sh
+
+case $# in
+  0)
+    printf '%s\n' "usage: $0 <class> [args...]" >&2
+    exit 2
+    ;;
+esac
+
+class="$1"
+shift
+
+exec mvn compile exec:java \
+  -Dexec.mainClass="edu.unc.cs.comp524.parsers.$class" \
+  -Dexec.args="$*"
