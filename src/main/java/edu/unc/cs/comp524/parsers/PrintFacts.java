@@ -36,5 +36,6 @@ public class PrintFacts
     System.out.println("rules");
     rule_pat.findAll(tree, "//*").stream()
       .forEach(m -> System.out.println(m.getTree().getText()));
+
   }
 }
