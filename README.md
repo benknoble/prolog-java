@@ -12,3 +12,8 @@ modifications are made in accordance with said license.
 ## About the build
 
 Build with maven, using the ANTLR v4 plugin.
+
+## Useful links about ANTLR4
+
+- [ANLTR4 runtime API](https://www.antlr.org/api/Java/overview-summary.html)
+- [ANTLR4 documentation](https://github.com/antlr/antlr4/blob/4.6/doc/index.md)
