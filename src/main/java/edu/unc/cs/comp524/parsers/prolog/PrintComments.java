@@ -18,7 +18,7 @@ public class PrintComments
     PrologParser parser = new PrologParser(tokens);
     ParseTree tree = parser.p_text();
 
-    ParseTreeWalker.DEFAULT.walk(new PrologBaseListener() {
+    ParseTreeWalker.DEFAULT.walk(new PrologListenerWithTokens(tokens) {
 
       @Override
       public void enterClause(PrologParser.ClauseContext ctx) {
