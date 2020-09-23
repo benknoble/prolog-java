@@ -11,5 +11,5 @@ class="$1"
 shift
 
 exec mvn compile exec:java \
-  -Dexec.mainClass="edu.unc.cs.comp524.parsers.$class" \
+  -Dexec.mainClass="edu.unc.cs.comp524.parsers.prolog.$class" \
   -Dexec.args="$*"

@@ -1,4 +1,4 @@
-package edu.unc.cs.comp524.parsers;
+package edu.unc.cs.comp524.parsers.prolog;
 
 import java.io.*;
 import java.util.*;

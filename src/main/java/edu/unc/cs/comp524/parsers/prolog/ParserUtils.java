@@ -1,10 +1,10 @@
-package edu.unc.cs.comp524.parsers;
+package edu.unc.cs.comp524.parsers.prolog;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.tree.pattern.*;
 
-public class PrologParserUtils {
+public class ParserUtils {
   public static final ParseTreePattern factPattern(PrologParser parser) {
     return parser.compileParseTreePattern(
         "<atom>(<termlist>).",

@@ -1,4 +1,4 @@
-package edu.unc.cs.comp524.parsers;
+package edu.unc.cs.comp524.parsers.prolog;
 
 import java.io.*;
 import java.util.*;
@@ -29,8 +29,8 @@ public class PrintComments
             PrologLexer.COMMENTCH);
 
         // get clause name
-        var factMatch = PrologParserUtils.factPattern(parser).match(ctx);
-        var ruleMatch = PrologParserUtils.rulePattern(parser).match(ctx);
+        var factMatch = ParserUtils.factPattern(parser).match(ctx);
+        var ruleMatch = ParserUtils.rulePattern(parser).match(ctx);
         String clauseName = null;
         if (factMatch.succeeded())
           clauseName = factMatch.get("atom").getText();
@@ -43,7 +43,7 @@ public class PrintComments
           Token lastComment = comments.get(comments.size()-1);
           int lastCommentLineStart = lastComment.getLine();
           int lastCommentLine =
-            lastCommentLineStart + PrologParserUtils.countLines(lastComment);
+            lastCommentLineStart + ParserUtils.countLines(lastComment);
           if (clauseLine == lastCommentLine+1)
             System.out.println(String.format(
                   "%s(%d): %s(%d)",
