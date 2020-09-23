@@ -23,18 +23,12 @@ public class PrintFacts
     // begin parsing at init rule
     ParseTree tree = parser.p_text();
 
-    ParseTreePattern fact_pat = parser.compileParseTreePattern(
-        "<atom>(<termlist>).",
-        PrologParser.RULE_clause);
     System.out.println("facts");
-    fact_pat.findAll(tree, "//*").stream()
+    ParserUtils.factPattern(parser).findAll(tree, "//*").stream()
       .forEach(m -> System.out.println(m.getTree().getText()));
 
-    ParseTreePattern rule_pat = parser.compileParseTreePattern(
-        "<atom>(<termlist>) :- <term>.",
-        PrologParser.RULE_clause);
     System.out.println("rules");
-    rule_pat.findAll(tree, "//*").stream()
+    ParserUtils.factPattern(parser).findAll(tree, "//*").stream()
       .forEach(m -> System.out.println(m.getTree().getText()));
 
   }
