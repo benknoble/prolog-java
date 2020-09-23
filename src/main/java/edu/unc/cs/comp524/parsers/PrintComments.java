@@ -20,16 +20,6 @@ public class PrintComments
 
     ParseTreeWalker.DEFAULT.walk(new PrologBaseListener() {
 
-      private final ParseTreePattern factPattern =
-        parser.compileParseTreePattern(
-            "<atom>(<termlist>).",
-            PrologParser.RULE_clause);
-
-      private final ParseTreePattern rulePattern =
-        parser.compileParseTreePattern(
-            "<atom>(<termlist>) :- <term>.",
-            PrologParser.RULE_clause);
-
       @Override
       public void enterClause(PrologParser.ClauseContext ctx) {
         // get tokens from comment channel
@@ -39,8 +29,8 @@ public class PrintComments
             PrologLexer.COMMENTCH);
 
         // get clause name
-        var factMatch = factPattern.match(ctx);
-        var ruleMatch = rulePattern.match(ctx);
+        var factMatch = PrologParserUtils.factPattern(parser).match(ctx);
+        var ruleMatch = PrologParserUtils.rulePattern(parser).match(ctx);
         String clauseName = null;
         if (factMatch.succeeded())
           clauseName = factMatch.get("atom").getText();
@@ -52,7 +42,8 @@ public class PrintComments
           int clauseLine = ctx.getStart().getLine();
           Token lastComment = comments.get(comments.size()-1);
           int lastCommentLineStart = lastComment.getLine();
-          int lastCommentLine = lastCommentLineStart + countLines(lastComment);
+          int lastCommentLine =
+            lastCommentLineStart + PrologParserUtils.countLines(lastComment);
           if (clauseLine == lastCommentLine+1)
             System.out.println(String.format(
                   "%s(%d): %s(%d)",
@@ -64,9 +55,5 @@ public class PrintComments
       }
     }, tree);
 
-  }
-
-  private static int countLines(final Token t) {
-    return t.getText().split("\n").length - 1;
   }
 }
