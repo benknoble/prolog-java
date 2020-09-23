@@ -23,10 +23,7 @@ public class PrintComments
       @Override
       public void enterClause(PrologParser.ClauseContext ctx) {
         // get tokens from comment channel
-        int clauseTokenPosition = ctx.getStart().getTokenIndex();
-        List<Token> comments = tokens.getHiddenTokensToLeft(
-            clauseTokenPosition,
-            PrologLexer.COMMENTCH);
+        List<Token> comments = commentsToLeft(ctx);
 
         // get clause name
         var factMatch = ParserUtils.factPattern(parser).match(ctx);
@@ -37,20 +34,11 @@ public class PrintComments
         else if (ruleMatch.succeeded())
           clauseName = ruleMatch.get("atom").getText();
 
-        if (clauseName != null && comments != null) {
-          // check line numbers
-          int clauseLine = ctx.getStart().getLine();
-          Token lastComment = comments.get(comments.size()-1);
-          int lastCommentLineStart = lastComment.getLine();
-          int lastCommentLine =
-            lastCommentLineStart + ParserUtils.countLines(lastComment);
-          if (clauseLine == lastCommentLine+1)
-            System.out.println(String.format(
-                  "%s(%d): %s(%d)",
-                  clauseName,
-                  clauseLine,
-                  comments,
-                  lastCommentLine));
+        // check line numbers
+        if (clauseName != null && comments != null
+            && areTokensOnNode(ctx, comments))
+        {
+          System.out.println(String.format("%s: %s", clauseName, comments));
         }
       }
     }, tree);
