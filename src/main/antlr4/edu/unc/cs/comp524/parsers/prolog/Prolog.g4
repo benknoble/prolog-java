@@ -58,6 +58,7 @@ term
     | '-'? FLOAT        # float
     // structure / compound term
     | atom '(' termlist ')'     # compound_term
+    | atom '(' termlist ')' ':-' termlist # conjuncts
     |<assoc=right> term operator term        # binary_operator
     | operator term             # unary_operator
     | '[' termlist ( '|' term )? ']' # list_term
@@ -70,12 +71,11 @@ term
 //TODO: modifying operator table
 
 operator
-    : ':-' | '-->'
+    :  '-->'
     | '?-'
     | 'dynamic' | 'multifile' | 'discontiguous' | 'public' //TODO: move operators used in directives to "built-in" definition of dialect
     | ';'
     | '->'
-    | ','
     | '\\+'
     | '=' | '\\='
     | '==' | '\\==' | '@<' | '@=<' | '@>' | '@>='
