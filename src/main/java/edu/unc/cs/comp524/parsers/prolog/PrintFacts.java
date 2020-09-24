@@ -28,7 +28,7 @@ public class PrintFacts
       .forEach(m -> System.out.println(m.getTree().getText()));
 
     System.out.println("rules");
-    ParserUtils.factPattern(parser).findAll(tree, "//*").stream()
+    ParserUtils.rulePattern(parser).findAll(tree, "//*").stream()
       .forEach(m -> System.out.println(m.getTree().getText()));
 
   }
