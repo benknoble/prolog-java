@@ -9,4 +9,4 @@ esac
 
 exec mvn exec:java \
   -Dexec.mainClass="org.antlr.v4.gui.TestRig" \
-  -Dexec.args="edu.unc.cs.comp524.parsers.Prolog $*"
+  -Dexec.args="edu.unc.cs.comp524.parsers.prolog.Prolog $*"
