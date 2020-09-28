@@ -20,7 +20,7 @@ public class AComment implements Comment {
   public AComment(final List<Token> ts) {
     this(ts.stream()
         .map(t -> t.getText())
-        .collect(Collectors.joining("\n")));
+        .collect(Collectors.joining()));
   }
 
   @Override
