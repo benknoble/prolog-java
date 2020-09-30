@@ -20,12 +20,8 @@ public class PrintInvocations
 
     System.out.println("invocations of rules");
     var applicationPattern = ParserUtils.invocationPattern(parser);
-    var binopPattern = parser.compileParseTreePattern(
-        "<term> <operator> <term>",
-        PrologParser.RULE_term);
-    var unopPattern = parser.compileParseTreePattern(
-        "<operator> <term>",
-        PrologParser.RULE_term);
+    var binopPattern = ParserUtils.binopPattern(parser);
+    var unopPattern = ParserUtils.unopPattern(parser);
     ParseTreeWalker.DEFAULT.walk(new PrologBaseListener() {
       @Override
       public void enterConjuncts(PrologParser.ConjunctsContext ctx) {
