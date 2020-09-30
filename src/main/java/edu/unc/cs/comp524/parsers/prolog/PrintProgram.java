@@ -17,7 +17,6 @@ public class PrintProgram {
 
     var collector = new RelationCollectorListener(tokens, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
-    System.out.println("program tree");
     System.out.println(collector.program());
   }
 }

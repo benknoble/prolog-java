@@ -1,6 +1,7 @@
 package edu.unc.cs.comp524.parsers.prolog;
 
 import java.util.*;
+import java.util.stream.*;
 
 public abstract class ARelation implements Relation {
 
@@ -47,5 +48,16 @@ public abstract class ARelation implements Relation {
   @Override
   public Optional<Comment> comment() {
     return comment;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "{\nfunctor: %s/%d,\nargs: %s,\ncomment: %s\n}",
+        name(), arity(),
+        args().stream()
+        .map(PrologParser.TermContext::getText)
+        .collect(Collectors.toList()),
+        comment());
   }
 }

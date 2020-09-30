@@ -20,4 +20,16 @@ public class AProgram implements Program {
   public Map<String, List<Relation>> clauses() {
     return clauses;
   }
+
+  @Override
+  public String toString() {
+    return String.format("{program: {\n%s\n}}",
+        clauses().entrySet().stream()
+        .map(kv -> String.format("%s: %s",
+            kv.getKey(),
+            kv.getValue().stream()
+            .map(r -> String.format("%s", r))
+            .collect(Collectors.toList())))
+        .collect(Collectors.joining(",\n")));
+  }
 }

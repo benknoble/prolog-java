@@ -1,6 +1,7 @@
 package edu.unc.cs.comp524.parsers.prolog;
 
 import java.util.*;
+import java.util.stream.*;
 
 public class ARuleInvocation implements RuleInvocation {
   private final Fact fact;
@@ -44,5 +45,15 @@ public class ARuleInvocation implements RuleInvocation {
       && r.name() != null
       && name().equals(r.name())
       && arity() == r.arity();
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "{\nfunctor: %s/%d,\nargs: %s\n}",
+        fact.name(), fact.arity(),
+        fact.args().stream()
+        .map(PrologParser.TermContext::getText)
+        .collect(Collectors.toList()));
   }
 }

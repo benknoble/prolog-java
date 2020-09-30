@@ -1,6 +1,7 @@
 package edu.unc.cs.comp524.parsers.prolog;
 
 import java.util.*;
+import java.util.stream.*;
 
 public final class ARule extends ARelation implements Rule {
   private final List<RuleInvocation> rhs;
@@ -28,5 +29,17 @@ public final class ARule extends ARelation implements Rule {
   @Override
   public List<RuleInvocation> rhs() {
     return rhs;
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "{\nfunctor: %s/%d,\nargs: %s,\ncomment: %s,\nsubrules: %s\n}",
+        name(), arity(),
+        args().stream()
+        .map(PrologParser.TermContext::getText)
+        .collect(Collectors.toList()),
+        comment(),
+        rhs());
   }
 }

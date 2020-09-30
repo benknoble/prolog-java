@@ -27,4 +27,9 @@ public class AComment implements Comment {
   public String text() {
     return text;
   }
+
+  @Override
+  public String toString() {
+    return text();
+  }
 }
