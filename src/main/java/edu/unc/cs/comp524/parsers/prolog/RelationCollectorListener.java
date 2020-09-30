@@ -18,6 +18,8 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
   private final ParseTreePattern factPattern;
   private final ParseTreePattern rulePattern;
   private final ParseTreePattern invocationPattern;
+  private final ParseTreePattern binopPattern;
+  private final ParseTreePattern unopPattern;
   private List<Relation> relations;
 
   public RelationCollectorListener(
@@ -29,6 +31,8 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     factPattern = ParserUtils.factPattern(parser);
     rulePattern = ParserUtils.rulePattern(parser);
     invocationPattern = ParserUtils.invocationPattern(parser);
+    binopPattern = ParserUtils.binopPattern(parser);
+    unopPattern = ParserUtils.unopPattern(parser);
     relations = new ArrayList<>();
   }
 
@@ -76,7 +80,10 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
           name,
           args,
           comment,
-          invocations(body)));
+          ParserUtils.join(
+            invocations(body),
+            binops(body),
+            unops(body))));
   }
 
   private Optional<Comment> comment(PrologParser.ClauseContext ctx) {
@@ -98,6 +105,44 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
            return new ARuleInvocation(
                (PrologParser.AtomContext)m.get("atom"),
                (PrologParser.TermlistContext)m.get("termlist"));
+         } catch (ClassCastException e) {
+           return null;
+         }
+       })
+       .filter(r -> r != null)
+       .collect(Collectors.toList()));
+  }
+
+  private List<RuleInvocation> binops(PrologParser.TermlistContext body) {
+    return
+      (binopPattern
+       .findAll(body, "//*")
+       .stream()
+       .map(m -> {
+         try {
+           return new ARuleInvocation(
+               m.get("operator").getText(),
+               m.getAll("term").stream()
+               .map(tree -> (PrologParser.TermContext)tree)
+               .collect(Collectors.toList()));
+         } catch (ClassCastException e) {
+           return null;
+         }
+       })
+       .filter(r -> r != null)
+       .collect(Collectors.toList()));
+  }
+
+  private List<RuleInvocation> unops(PrologParser.TermlistContext body) {
+    return
+      (unopPattern
+       .findAll(body, "//*")
+       .stream()
+       .map(m -> {
+         try {
+           return new ARuleInvocation(
+               m.get("operator").getText(),
+               List.of((PrologParser.TermContext)m.get("term")));
          } catch (ClassCastException e) {
            return null;
          }
