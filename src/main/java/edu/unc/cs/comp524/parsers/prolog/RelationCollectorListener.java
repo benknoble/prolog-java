@@ -2,6 +2,7 @@ package edu.unc.cs.comp524.parsers.prolog;
 
 import java.util.*;
 import java.util.stream.*;
+import java.util.function.*;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.pattern.*;
@@ -95,60 +96,56 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
       : Optional.empty();
   }
 
-  private List<RuleInvocation> invocations(PrologParser.TermlistContext body) {
+  private List<RuleInvocation> matchPattern(
+      ParseTreePattern pattern,
+      PrologParser.TermlistContext body,
+      Function<ParseTreeMatch, ARuleInvocation> f)
+  {
     return
-      (invocationPattern
+      (pattern
        .findAll(body, "//*")
        .stream()
        .map(m -> {
          try {
-           return new ARuleInvocation(
-               (PrologParser.AtomContext)m.get("atom"),
-               (PrologParser.TermlistContext)m.get("termlist"));
+           return f.apply(m);
          } catch (ClassCastException e) {
            return null;
          }
        })
        .filter(r -> r != null)
        .collect(Collectors.toList()));
+  }
+
+  private List<RuleInvocation> invocations(PrologParser.TermlistContext body) {
+    return
+      matchPattern(
+          invocationPattern,
+          body,
+          m -> new ARuleInvocation(
+            (PrologParser.AtomContext)m.get("atom"),
+            (PrologParser.TermlistContext)m.get("termlist")));
   }
 
   private List<RuleInvocation> binops(PrologParser.TermlistContext body) {
     return
-      (binopPattern
-       .findAll(body, "//*")
-       .stream()
-       .map(m -> {
-         try {
-           return new ARuleInvocation(
+      matchPattern(
+          binopPattern,
+          body,
+          m -> new ARuleInvocation(
                m.get("operator").getText(),
                m.getAll("term").stream()
-               .map(tree -> (PrologParser.TermContext)tree)
-               .collect(Collectors.toList()));
-         } catch (ClassCastException e) {
-           return null;
-         }
-       })
-       .filter(r -> r != null)
-       .collect(Collectors.toList()));
+                .map(tree -> (PrologParser.TermContext)tree)
+                .collect(Collectors.toList())));
   }
 
   private List<RuleInvocation> unops(PrologParser.TermlistContext body) {
     return
-      (unopPattern
-       .findAll(body, "//*")
-       .stream()
-       .map(m -> {
-         try {
-           return new ARuleInvocation(
+      matchPattern(
+          unopPattern,
+          body,
+          m -> new ARuleInvocation(
                m.get("operator").getText(),
-               List.of((PrologParser.TermContext)m.get("term")));
-         } catch (ClassCastException e) {
-           return null;
-         }
-       })
-       .filter(r -> r != null)
-       .collect(Collectors.toList()));
+               List.of((PrologParser.TermContext)m.get("term"))));
   }
 
 }
