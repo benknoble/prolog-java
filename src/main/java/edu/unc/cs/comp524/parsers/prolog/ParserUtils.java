@@ -20,6 +20,12 @@ public class ParserUtils {
         PrologParser.RULE_clause);
   }
 
+  public static final ParseTreePattern rule0Pattern(PrologParser parser) {
+    return parser.compileParseTreePattern(
+        "<atom> :- <termlist>.",
+        PrologParser.RULE_clause);
+  }
+
   public static final ParseTreePattern invocationPattern(PrologParser parser) {
     return parser.compileParseTreePattern(
         "<atom>(<termlist>)",

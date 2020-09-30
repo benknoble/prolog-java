@@ -18,6 +18,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
   private final PrologParser parser;
   private final ParseTreePattern factPattern;
   private final ParseTreePattern rulePattern;
+  private final ParseTreePattern rule0Pattern;
   private final ParseTreePattern invocationPattern;
   private final ParseTreePattern binopPattern;
   private final ParseTreePattern unopPattern;
@@ -31,6 +32,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     this.parser = parser;
     factPattern = ParserUtils.factPattern(parser);
     rulePattern = ParserUtils.rulePattern(parser);
+    rule0Pattern = ParserUtils.rule0Pattern(parser);
     invocationPattern = ParserUtils.invocationPattern(parser);
     binopPattern = ParserUtils.binopPattern(parser);
     unopPattern = ParserUtils.unopPattern(parser);
@@ -45,6 +47,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
   public void enterClause(PrologParser.ClauseContext ctx) {
     var factMatch = factPattern.match(ctx);
     var ruleMatch = rulePattern.match(ctx);
+    var rule0Match = rule0Pattern.match(ctx);
     if (factMatch.succeeded())
       handleFact(
           factMatch,
@@ -53,6 +56,11 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     else if (ruleMatch.succeeded())
       handleRule(
           ruleMatch,
+          (PrologParser.ConjunctsContext)ctx.term(),
+          comment(ctx));
+    else if (rule0Match.succeeded())
+      handleRule0(
+          rule0Match,
           (PrologParser.ConjunctsContext)ctx.term(),
           comment(ctx));
     // else: clause is a term, but not a fact or a rule, so it's probably not
@@ -80,6 +88,23 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     relations.add(new ARule(
           name,
           args,
+          comment,
+          ParserUtils.join(
+            invocations(body),
+            binops(body),
+            unops(body))));
+  }
+
+  private void handleRule0(
+      ParseTreeMatch match,
+      PrologParser.ConjunctsContext ctx,
+      Optional<Comment> comment)
+  {
+    var name = ctx.atom();
+    var body = ctx.termlist(0);
+    relations.add(new ARule(
+          name.getText(),
+          List.of(),
           comment,
           ParserUtils.join(
             invocations(body),

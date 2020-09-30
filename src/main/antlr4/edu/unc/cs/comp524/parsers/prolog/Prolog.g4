@@ -58,7 +58,7 @@ term
     | '-'? FLOAT        # float
     // structure / compound term
     | atom '(' termlist ')'     # compound_term
-    | atom '(' termlist ')' ':-' termlist # conjuncts
+    | atom ('(' termlist ')')? ':-' termlist # conjuncts
     |<assoc=right> term operator term        # binary_operator
     | operator term             # unary_operator
     | '[' termlist ( '|' term )? ']' # list_term

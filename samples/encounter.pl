@@ -10,6 +10,9 @@ largeExhalation(30).
 mediumExhalation(20).
 smallExhalation(10).
 
+% like a fact, but actually a rule with arity 0...
+head :- true.
+
 % makes a table of the given safe values
 givenSafeTable(Table) :-
     \+ false, % won't change anything
