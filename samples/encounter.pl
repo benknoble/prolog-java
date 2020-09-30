@@ -12,6 +12,7 @@ smallExhalation(10).
 
 % makes a table of the given safe values
 givenSafeTable(Table) :-
+    \+ false, % won't change anything
     largeDistance(LARGE_DISTANCE),
     largeDuration(LARGE_DURATION),
     largeExhalation(LARGE_EXHALATION),
