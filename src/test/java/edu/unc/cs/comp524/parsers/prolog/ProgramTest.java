@@ -14,7 +14,10 @@ public class ProgramTest {
   public static void setup() {
     var input = CharStreams.fromString(String.join("\n"
           , "% a sample program"
+          , "fact(true)."
           , "foo :- bar."
+          , "foo(1)."
+          , "baz(X) :- X."
           , ""));
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
@@ -29,6 +32,19 @@ public class ProgramTest {
   @Test
   public void testClauses() {
     assertThat(program.clauses(), allOf(
-        IsMapContaining.hasEntry(is("foo"), anything())));
+        IsMapContaining.hasEntry(is("fact"), anything()),
+        IsMapContaining.hasEntry(is("foo"), anything()),
+        IsMapContaining.hasEntry(is("baz"), anything())));
+  }
+
+  @Test
+  public void testArity() {
+    assertThat(program.arity("fact"),
+          IsIterableContainingInAnyOrder.containsInAnyOrder(1));
+    assertThat(program.arity("foo"),
+          IsIterableContainingInAnyOrder.containsInAnyOrder(0, 1));
+    assertThat(program.arity("baz"),
+          IsIterableContainingInAnyOrder.containsInAnyOrder(1));
+    assertThat(program.arity("dne"), IsEmptyCollection.empty());
   }
 }
