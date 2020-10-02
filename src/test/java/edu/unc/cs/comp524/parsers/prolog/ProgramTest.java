@@ -24,6 +24,7 @@ public class ProgramTest {
           , "baz(X) :- X."
           , "rec(0)."
           , "rec(X) :- X > 0, XN is X-1, rec(XN)."
+          , "recIndirect(X) :- X > 0, rec(X)."
           , ""));
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
@@ -61,6 +62,7 @@ public class ProgramTest {
           "fact",
           "foo",
           "rec",
+          "recIndirect",
           "baz"));
   }
 
@@ -81,4 +83,15 @@ public class ProgramTest {
     assertFalse(program.isRecursive("baz"));
     assertTrue(program.isRecursive("rec"));
   }
+
+  @Test
+  public void testContainsRecursive() {
+    assertFalse(program.containsRecursive("fact"));
+    assertFalse(program.containsRecursive("foo"));
+    assertFalse(program.containsRecursive("baz"));
+    // rec contains rec, which is recursive
+    assertTrue(program.containsRecursive("rec"));
+    assertTrue(program.containsRecursive("recIndirect"));
+  }
+
 }

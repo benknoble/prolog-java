@@ -40,4 +40,19 @@ public interface Program {
       .map(f -> (Rule)f)
       .anyMatch(r -> r.rhs().stream().anyMatch(ri -> ri.isInvocationOf(r)));
   }
+
+  public default boolean containsRecursive(String name) {
+    var clauses = clauses().getOrDefault(name, List.of());
+    if (clauses.isEmpty())
+      return false;
+    return
+      clauses
+      .stream()
+      .filter(c -> c instanceof Rule)
+      .map(f -> (Rule)f)
+      .flatMap(r -> r.rhs().stream())
+      .map(RuleInvocation::name)
+      .anyMatch(this::isRecursive);
+  }
+
 }
