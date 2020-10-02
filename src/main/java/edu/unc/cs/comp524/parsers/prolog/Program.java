@@ -2,6 +2,7 @@ package edu.unc.cs.comp524.parsers.prolog;
 
 import java.util.*;
 import java.util.stream.*;
+import java.util.function.*;
 
 public interface Program {
   public Map<String, List<Relation>> clauses();
@@ -53,6 +54,37 @@ public interface Program {
       .flatMap(r -> r.rhs().stream())
       .map(RuleInvocation::name)
       .anyMatch(this::isRecursive);
+  }
+
+  public default List<RuleInvocation> undefined() {
+    var invocations =
+      clauses()
+      .values()
+      .stream()
+      .flatMap(Collection::stream)
+      .filter(c -> c instanceof Rule)
+      .map(f -> (Rule)f)
+      .flatMap(r -> r.rhs().stream());
+    var defined =
+      clauses()
+      .values()
+      .stream()
+      .flatMap(Collection::stream)
+      /* collection necessary here to avoid issues with re-using a consumed
+       * stream
+       *
+       * each stream can be consumed exactly once, and we need to use this one
+       * many times (defined is captured in the isInvocationOfAnyRule closure)
+       *
+       * so we collect it and stream it anew at each use
+       */
+      .collect(Collectors.toList());
+    Predicate<RuleInvocation> isInvocationOfAnyRule =
+      ri -> defined.stream().anyMatch(r -> ri.isInvocationOf(r));
+    return
+      invocations
+      .filter(isInvocationOfAnyRule.negate())
+      .collect(Collectors.toList());
   }
 
 }

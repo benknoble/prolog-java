@@ -19,7 +19,7 @@ public class ProgramTest {
           , ""
           , "fact(true)."
           , "% foo if bar"
-          , "foo :- bar."
+          , "foo :- bar(1)."
           , "foo(1)."
           , "baz(X) :- X."
           , "rec(0)."
@@ -92,6 +92,22 @@ public class ProgramTest {
     // rec contains rec, which is recursive
     assertTrue(program.containsRecursive("rec"));
     assertTrue(program.containsRecursive("recIndirect"));
+  }
+
+  @Test
+  public void testUndefined() {
+    assertThat(program
+        .undefined()
+        .stream()
+        .map(RuleInvocation::name)
+        .collect(Collectors.toList()),
+        IsIterableContainingInAnyOrder.containsInAnyOrder(
+          ">",
+          ">", // appears twice
+          "is",
+          "-",
+          "bar"));
+
   }
 
 }
