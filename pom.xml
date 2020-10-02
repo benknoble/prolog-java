@@ -6,7 +6,7 @@
 
   <groupId>edu.unc.cs.comp524.parsers</groupId>
   <artifactId>prolog</artifactId>
-  <version>1.0.0-alpha</version>
+  <version>1.0.0-beta</version>
 
   <name>prolog</name>
   <url>https://github.com/benknoble/prolog-java.git</url>
