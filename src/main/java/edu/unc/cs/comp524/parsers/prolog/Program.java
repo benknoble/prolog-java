@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.stream.*;
 import java.util.function.*;
 
+import org.antlr.v4.runtime.*;
+
 public interface Program {
   public Map<String, List<Relation>> clauses();
 
@@ -96,6 +98,36 @@ public interface Program {
       })
       .max()
       .orElse(0);
+  }
+
+  public default boolean noMagicNumbers() {
+    return
+      rules(relations())
+      .allMatch(r ->
+          r.args()
+          .stream()
+          .map(ParserRuleContext::getText)
+          .filter(Program::isNum)
+          .map(Integer::parseInt)
+          .allMatch(Program::allowedNumber)
+
+          &&
+
+          r.rhs()
+          .stream()
+          .flatMap(ri -> ri.args().stream())
+          .map(ParserRuleContext::getText)
+          .filter(Program::isNum)
+          .map(Integer::parseInt)
+          .allMatch(Program::allowedNumber));
+  }
+
+  private static boolean allowedNumber(int i) {
+    return Set.of(0,1,2).contains(i);
+  }
+
+  private static boolean isNum(String s) {
+    return s.matches("^\\d+$");
   }
 
   private static Stream<Rule> rules(Stream<Relation> relations) {

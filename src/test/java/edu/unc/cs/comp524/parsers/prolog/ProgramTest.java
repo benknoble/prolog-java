@@ -126,4 +126,36 @@ public class ProgramTest {
     assertThat(program.depth("odd"), is(3));
   }
 
+  @Test
+  public void testNoMagicNumbers() {
+    assertTrue(program.noMagicNumbers());
+
+    var input = CharStreams.fromString(String.join("\n"
+          , "someRule(123) :- true."
+          , ""));
+    var lexer = new PrologLexer(input);
+    var tokens = new CommonTokenStream(lexer);
+    var parser = new PrologParser(tokens);
+    var tree = parser.p_text();
+
+    var collector = new RelationCollectorListener(tokens, parser);
+    ParseTreeWalker.DEFAULT.walk(collector, tree);
+    var numProgram = collector.program();
+    assertFalse(numProgram.noMagicNumbers());
+
+    input = CharStreams.fromString(String.join("\n"
+          , "someRule(X) :- otherRule(123)."
+          , ""));
+    lexer = new PrologLexer(input);
+    tokens = new CommonTokenStream(lexer);
+    parser = new PrologParser(tokens);
+    tree = parser.p_text();
+
+    collector = new RelationCollectorListener(tokens, parser);
+    ParseTreeWalker.DEFAULT.walk(collector, tree);
+    numProgram = collector.program();
+    assertFalse(numProgram.noMagicNumbers());
+
+  }
+
 }
