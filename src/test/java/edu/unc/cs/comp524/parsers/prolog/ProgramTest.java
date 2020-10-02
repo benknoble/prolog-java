@@ -25,6 +25,10 @@ public class ProgramTest {
           , "rec(0)."
           , "rec(X) :- X > 0, XN is X-1, rec(XN)."
           , "recIndirect(X) :- X > 0, rec(X)."
+          , "even(0)."
+          , "even(X) :- X > 0, XN is X-1, odd(XN)."
+          , "odd(1)."
+          , "odd(X) :- X > 1, XN is X-1, even(XN)."
           , ""));
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
@@ -63,6 +67,8 @@ public class ProgramTest {
           "foo",
           "rec",
           "recIndirect",
+          "even",
+          "odd",
           "baz"));
   }
 
@@ -100,14 +106,24 @@ public class ProgramTest {
         .undefined()
         .stream()
         .map(RuleInvocation::name)
-        .collect(Collectors.toList()),
+        .collect(Collectors.toSet()),
         IsIterableContainingInAnyOrder.containsInAnyOrder(
           ">",
-          ">", // appears twice
           "is",
           "-",
           "bar"));
 
+  }
+
+  @Test
+  public void testDepth() {
+    assertThat(program.depth("fact"), is(0));
+    assertThat(program.depth("foo"), is(2));
+    assertThat(program.depth("baz"), is(1));
+    assertThat(program.depth("rec"), is(2));
+    assertThat(program.depth("recIndirect"), is(3));
+    assertThat(program.depth("even"), is(3));
+    assertThat(program.depth("odd"), is(3));
   }
 
 }

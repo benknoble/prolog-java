@@ -61,6 +61,43 @@ public interface Program {
       .collect(Collectors.toList());
   }
 
+  public default int depth(String name) {
+    var undefined =
+      undefined()
+      .stream()
+      .map(RuleInvocation::name)
+      .collect(Collectors.toSet());
+    return depth(name, new Stack(), undefined);
+  }
+
+  private int depth(String name, Stack<String> ignore, Set<String> undefined) {
+    if (undefined.contains(name)) return 1;
+    else if (ignore.contains(name)) return 0;
+    else return
+      clauses()
+      .getOrDefault(name, List.of())
+      .stream()
+      .mapToInt(r -> {
+        if (r instanceof Fact) return 0;
+        else if (r instanceof Rule) {
+          var rule = (Rule)r;
+          ignore.push(name);
+          int depth = 1 +
+            rule.rhs().stream()
+            .map(RuleInvocation::name)
+            .mapToInt(n -> depth(n, ignore, undefined))
+            .max()
+            .orElse(0);
+          ignore.pop();
+          return depth;
+        }
+        // shouldn't be the case
+        else return 0;
+      })
+      .max()
+      .orElse(0);
+  }
+
   private static Stream<Rule> rules(Stream<Relation> relations) {
     return
       relations
