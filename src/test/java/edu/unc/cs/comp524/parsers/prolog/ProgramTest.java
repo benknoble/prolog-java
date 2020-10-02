@@ -22,6 +22,8 @@ public class ProgramTest {
           , "foo :- bar."
           , "foo(1)."
           , "baz(X) :- X."
+          , "rec(0)."
+          , "rec(X) :- X > 0, XN is X-1, rec(XN)."
           , ""));
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
@@ -55,7 +57,11 @@ public class ProgramTest {
   @Test
   public void testNames() {
     assertThat(program.names(),
-        IsIterableContainingInAnyOrder.containsInAnyOrder("fact", "foo", "baz"));
+        IsIterableContainingInAnyOrder.containsInAnyOrder(
+          "fact",
+          "foo",
+          "rec",
+          "baz"));
   }
 
   @Test
@@ -66,5 +72,13 @@ public class ProgramTest {
         .map(Relation::name)
         .collect(Collectors.toList()),
         IsIterableContainingInAnyOrder.containsInAnyOrder("foo"));
+  }
+
+  @Test
+  public void testIsRecursive() {
+    assertFalse(program.isRecursive("fact"));
+    assertFalse(program.isRecursive("foo"));
+    assertFalse(program.isRecursive("baz"));
+    assertTrue(program.isRecursive("rec"));
   }
 }

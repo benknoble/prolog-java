@@ -29,4 +29,15 @@ public interface Program {
       .collect(Collectors.toList());
   }
 
+  public default boolean isRecursive(String name) {
+    var clauses = clauses().get(name);
+    if (clauses.isEmpty())
+      return false;
+    return
+      clauses
+      .stream()
+      .filter(c -> c instanceof Rule)
+      .map(f -> (Rule)f)
+      .anyMatch(r -> r.rhs().stream().anyMatch(ri -> ri.isInvocationOf(r)));
+  }
 }
