@@ -29,8 +29,6 @@ public interface Program {
 
   public default boolean isRecursive(String name) {
     var clauses = clauses().getOrDefault(name, List.of());
-    if (clauses.isEmpty())
-      return false;
     return
       rules(clauses.stream())
       .anyMatch(r -> r.rhs().stream().anyMatch(ri -> ri.isInvocationOf(r)));
@@ -38,8 +36,6 @@ public interface Program {
 
   public default boolean containsRecursive(String name) {
     var clauses = clauses().getOrDefault(name, List.of());
-    if (clauses.isEmpty())
-      return false;
     return
       invocations(clauses.stream())
       .map(RuleInvocation::name)
