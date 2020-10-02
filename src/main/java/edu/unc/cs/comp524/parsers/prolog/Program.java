@@ -24,13 +24,13 @@ public interface Program {
       clauses()
       .values()
       .stream()
-      .flatMap(rs -> rs.stream())
+      .flatMap(Collection::stream)
       .filter(r -> r.comment().isPresent())
       .collect(Collectors.toList());
   }
 
   public default boolean isRecursive(String name) {
-    var clauses = clauses().get(name);
+    var clauses = clauses().getOrDefault(name, List.of());
     if (clauses.isEmpty())
       return false;
     return
