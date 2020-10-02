@@ -18,4 +18,15 @@ public interface Program {
   public default List<String> names() {
     return new ArrayList(clauses().keySet());
   }
+
+  public default List<Relation> relationsWithComments() {
+    return
+      clauses()
+      .values()
+      .stream()
+      .flatMap(rs -> rs.stream())
+      .filter(r -> r.comment().isPresent())
+      .collect(Collectors.toList());
+  }
+
 }

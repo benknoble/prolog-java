@@ -8,13 +8,17 @@ import org.junit.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.hamcrest.collection.*;
 
+import java.util.stream.*;
+
 public class ProgramTest {
   private static Program program;
   @BeforeClass
   public static void setup() {
     var input = CharStreams.fromString(String.join("\n"
           , "% a sample program"
+          , ""
           , "fact(true)."
+          , "% foo if bar"
           , "foo :- bar."
           , "foo(1)."
           , "baz(X) :- X."
@@ -50,6 +54,17 @@ public class ProgramTest {
 
   @Test
   public void testNames() {
-    assertThat(program.names(), hasItems("fact", "foo", "baz"));
+    assertThat(program.names(),
+        IsIterableContainingInAnyOrder.containsInAnyOrder("fact", "foo", "baz"));
+  }
+
+  @Test
+  public void testRelationsWithComments() {
+    assertThat(program
+        .relationsWithComments()
+        .stream()
+        .map(Relation::name)
+        .collect(Collectors.toList()),
+        IsIterableContainingInAnyOrder.containsInAnyOrder("foo"));
   }
 }
