@@ -15,4 +15,7 @@ public interface Program {
       .collect(Collectors.toList());
   }
 
+  public default List<String> names() {
+    return new ArrayList(clauses().keySet());
+  }
 }

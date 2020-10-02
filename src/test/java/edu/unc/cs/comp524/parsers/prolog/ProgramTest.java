@@ -47,4 +47,9 @@ public class ProgramTest {
           IsIterableContainingInAnyOrder.containsInAnyOrder(1));
     assertThat(program.arity("dne"), IsEmptyCollection.empty());
   }
+
+  @Test
+  public void testNames() {
+    assertThat(program.names(), hasItems("fact", "foo", "baz"));
+  }
 }
