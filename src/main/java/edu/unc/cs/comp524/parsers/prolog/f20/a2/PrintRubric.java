@@ -157,35 +157,35 @@ public class PrintRubric {
     //
     // program.names().stream().mapInt(program::depth).max();
     report("givenSizes depth",
-        1,
+        2,
         program.depth("givenSizes") / 2.0);
 
     report("givenSafe depth",
-        1,
+        2,
         program.depth("givenSafe") / 2.0);
 
     report("derivedSafe depth",
-        1,
+        3,
         program.depth("derivedSafe") / 3.0);
 
     report("interpolatedSafe depth",
-        1,
+        4,
         program.depth("interpolatedSafe") / 4.0);
 
     report("generateSafeDistancesAndDurations depth",
-        1,
+        4,
         program.depth("generateSafeDistancesAndDurations") / 4.0);
 
     report("listGivenSafe depth",
-        1,
+        3,
         program.depth("listGivenSafe") / 3.0);
 
     report("printGivenCombinations depth",
-        1,
+        3,
         program.depth("printGivenCombinations") / 3.0);
 
     report("listGenerateSafeDistancesAndDurations depth",
-        1,
+        4,
         program.depth("listGenerateSafeDistancesAndDurations") / 4.0);
 
     // arity checks: don't worry about these if local checks already does them
