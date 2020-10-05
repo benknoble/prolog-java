@@ -29,6 +29,9 @@ public class ProgramTest {
           , "even(X) :- X > 0, XN is X-1, odd(XN)."
           , "odd(1)."
           , "odd(X) :- X > 1, XN is X-1, even(XN)."
+          , "recN(X) :- X > 0, XN is X-1, recN(XN, X)."
+          , "recN(1, 0)."
+          , "recN(X, N) :- N > 0, NN is N-1, recN(X, NN)."
           , ""));
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
@@ -69,6 +72,7 @@ public class ProgramTest {
           "recIndirect",
           "even",
           "odd",
+          "recN",
           "baz"));
   }
 
@@ -88,6 +92,8 @@ public class ProgramTest {
     assertFalse(program.isRecursive("foo"));
     assertFalse(program.isRecursive("baz"));
     assertTrue(program.isRecursive("rec"));
+    assertFalse(program.isRecursive("recIndirect"));
+    assertTrue(program.isRecursive("recN"));
   }
 
   @Test
@@ -98,6 +104,7 @@ public class ProgramTest {
     // rec contains rec, which is recursive
     assertTrue(program.containsRecursive("rec"));
     assertTrue(program.containsRecursive("recIndirect"));
+    assertTrue(program.containsRecursive("recN"));
   }
 
   @Test
