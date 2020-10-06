@@ -163,6 +163,32 @@ public class ProgramTest {
     numProgram = collector.program();
     assertFalse(numProgram.noMagicNumbers());
 
+    input = new ANTLRInputStream(String.join("\n"
+          , "someRule(X) :- X = [123]."
+          , ""));
+    lexer = new PrologLexer(input);
+    tokens = new CommonTokenStream(lexer);
+    parser = new PrologParser(tokens);
+    tree = parser.p_text();
+
+    collector = new RelationCollectorListener(tokens, parser);
+    ParseTreeWalker.DEFAULT.walk(collector, tree);
+    numProgram = collector.program();
+    assertFalse(numProgram.noMagicNumbers());
+
+    input = new ANTLRInputStream(String.join("\n"
+          , "someRule(X1) :- X1 = []."
+          , ""));
+    lexer = new PrologLexer(input);
+    tokens = new CommonTokenStream(lexer);
+    parser = new PrologParser(tokens);
+    tree = parser.p_text();
+
+    collector = new RelationCollectorListener(tokens, parser);
+    ParseTreeWalker.DEFAULT.walk(collector, tree);
+    numProgram = collector.program();
+    assertTrue(numProgram.noMagicNumbers());
+
   }
 
 }
