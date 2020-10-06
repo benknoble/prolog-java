@@ -9,7 +9,7 @@ public class PrintProgram {
   public static void main(String[] args)
     throws IOException
   {
-    var input = CharStreams.fromStream(System.in);
+    var input = new ANTLRInputStream(System.in);
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
     var parser = new PrologParser(tokens);

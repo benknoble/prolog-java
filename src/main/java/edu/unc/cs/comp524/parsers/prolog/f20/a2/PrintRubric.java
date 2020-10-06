@@ -18,7 +18,7 @@ public class PrintRubric {
       System.exit(1);
     }
 
-    var input = CharStreams.fromFileName(args[0]);
+    var input = new ANTLRFileStream(args[0]);
     var lexer = new PrologLexer(input);
     var tokens = new CommonTokenStream(lexer);
     var parser = new PrologParser(tokens);

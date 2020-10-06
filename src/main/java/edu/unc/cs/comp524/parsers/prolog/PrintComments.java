@@ -12,7 +12,7 @@ public class PrintComments
   public static void main(String[] args)
     throws IOException
   {
-    CharStream input = CharStreams.fromStream(System.in);
+    CharStream input = new ANTLRInputStream(System.in);
     PrologLexer lexer = new PrologLexer(input);
     CommonTokenStream tokens = new CommonTokenStream(lexer);
     PrologParser parser = new PrologParser(tokens);

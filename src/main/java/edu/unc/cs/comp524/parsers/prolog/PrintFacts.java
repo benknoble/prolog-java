@@ -13,7 +13,7 @@ public class PrintFacts
     throws IOException
   {
     // create a CharStream that reads from standard input
-    CharStream input = CharStreams.fromStream(System.in);
+    CharStream input = new ANTLRInputStream(System.in);
     // create a lexer that feeds off of input CharStream
     PrologLexer lexer = new PrologLexer(input);
     // create a buffer of tokens pulled from the lexer

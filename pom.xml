@@ -6,7 +6,7 @@
 
   <groupId>edu.unc.cs.comp524.parsers</groupId>
   <artifactId>prolog</artifactId>
-  <version>1.1.0-beta</version>
+  <version>1.2.0-alpha</version>
 
   <name>prolog</name>
   <url>https://github.com/benknoble/prolog-java.git</url>
@@ -20,12 +20,12 @@
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
-      <version>4.8</version>
+      <version>4.5.1</version>
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4</artifactId>
-      <version>4.8</version>
+      <version>4.5.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -92,7 +92,7 @@
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
-        <version>4.8</version>
+        <version>4.5.1</version>
         <executions>
           <execution>
             <id>antlr</id>

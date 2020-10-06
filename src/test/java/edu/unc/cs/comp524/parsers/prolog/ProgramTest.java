@@ -14,7 +14,7 @@ public class ProgramTest {
   private static Program program;
   @BeforeClass
   public static void setup() {
-    var input = CharStreams.fromString(String.join("\n"
+    var input = new ANTLRInputStream(String.join("\n"
           , "% a sample program"
           , ""
           , "fact(true)."
@@ -137,7 +137,7 @@ public class ProgramTest {
   public void testNoMagicNumbers() {
     assertTrue(program.noMagicNumbers());
 
-    var input = CharStreams.fromString(String.join("\n"
+    var input = new ANTLRInputStream(String.join("\n"
           , "someRule(123) :- true."
           , ""));
     var lexer = new PrologLexer(input);
@@ -150,7 +150,7 @@ public class ProgramTest {
     var numProgram = collector.program();
     assertFalse(numProgram.noMagicNumbers());
 
-    input = CharStreams.fromString(String.join("\n"
+    input = new ANTLRInputStream(String.join("\n"
           , "someRule(X) :- otherRule(123)."
           , ""));
     lexer = new PrologLexer(input);
