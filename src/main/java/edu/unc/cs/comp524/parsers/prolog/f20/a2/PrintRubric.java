@@ -239,43 +239,32 @@ public class PrintRubric {
 
     report("interpolatedSafe/1 -> interpolatedSafe/2",
         5,
-        program.clauses().getOrDefault("interpolatedSafe", List.of())
-        .stream()
-        .filter(r -> r.arity() == 1)
-        .filter(r -> r instanceof Rule)
-        .map(r -> (Rule)r)
-        .map(Rule::rhs)
-        .flatMap(Collection::stream)
+        Program.invocations(
+          program.clauses().getOrDefault("interpolatedSafe", List.of())
+          .stream()
+          .filter(r -> r.arity() == 1))
         .anyMatch(ri -> ri.isInvocationOf("interpolatedSafe", 2))
         ? 1 : 0);
 
     report("interpolatedSafe/2 -> interpolatedSafe/3",
         5,
-        program.clauses().getOrDefault("interpolatedSafe", List.of())
-        .stream()
-        .filter(r -> r.arity() == 2)
-        .filter(r -> r instanceof Rule)
-        .map(r -> (Rule)r)
-        .map(Rule::rhs)
-        .flatMap(Collection::stream)
+        Program.invocations(
+          program.clauses().getOrDefault("interpolatedSafe", List.of())
+          .stream()
+          .filter(r -> r.arity() == 2))
         .anyMatch(ri -> ri.isInvocationOf("interpolatedSafe", 3))
         ? 1 : 0);
 
     var givenSizesSubrules =
-      // ∀ clauses of givenSizes
-      program.clauses().getOrDefault("givenSizes", List.of())
-      .stream()
-      // with arity 3
-      .filter(r -> r.arity() == 3)
-      // that are rules
-      .filter(r -> r instanceof Rule)
-      .map(r -> (Rule)r)
-      // ∀ rule-invocations of such clauses
-      .map(Rule::rhs)
-      .flatMap(Collection::stream)
-      // that have arity 3
+      // ∀ invocations
+      Program.invocations(
+          // in clauses of givenSizes/3
+          program.clauses().getOrDefault("givenSizes", List.of())
+          .stream()
+          .filter(r -> r.arity() == 3))
+      // that themselves have arity 3
       .filter(ri -> ri.arity() == 3)
-      // get the names
+      // the names of such invocations
       .map(RuleInvocation::name)
       .collect(Collectors.toList());
     report("givenSizes calls column rules",
@@ -284,18 +273,19 @@ public class PrintRubric {
         givenSizesSubrules.size() == 3 ? 1 : 0);
     report("givenSizes' column rules call cell rules",
         9,
-        // ∀ names above
+        // ∀ names above (subrules in givenSizes)
         givenSizesSubrules
         .stream()
-        // ∀ relation-lists associated with a name
+        // ∀ clauses associated with a name
         .map(name -> program.clauses().getOrDefault(name, List.of()))
         // the following holds
         .allMatch(rs ->
-          rs.stream()
-          // ∀ the rules of arity 3
-          .filter(r -> r.arity() == 3)
-          .filter(r -> r instanceof Rule)
-          .map(r -> (Rule)r)
+          // ∀ the rules
+          Program.rules(
+            rs.stream()
+            // in the clauses of arity 3
+            .filter(r -> r.arity() == 3))
+          // in the right-hand-side
           .map(Rule::rhs)
           // ∃ a collection of rule-invocations
           .anyMatch(ris ->
@@ -308,31 +298,24 @@ public class PrintRubric {
 
      report("derivedSafe calls safety-checking rules",
          3,
-        // ∀ clauses of derivedSafe
-        program.clauses().getOrDefault("derivedSafe", List.of())
-        .stream()
-        // which has arity 3
-        .filter(r -> r.arity() == 3)
-        // that are rules
-        .filter(r -> r instanceof Rule)
-        .map(r -> (Rule)r)
+         // ∀ invocations
+         Program.invocations(
+           // that are in clauses of derivedSafe
+           program.clauses().getOrDefault("derivedSafe", List.of())
+           .stream()
+           // which has arity 3
+           .filter(r -> r.arity() == 3))
         // ∀ names of rule-invocations of such clauses
-        .map(Rule::rhs)
-        .flatMap(Collection::stream)
         .map(RuleInvocation::name)
         // where
         .filter(ri ->
-          // their clauses
-          program.clauses().getOrDefault(ri, List.of())
-          .stream()
-          // are rules
-          .filter(r -> r instanceof Rule)
-          .map(r -> (Rule)r)
-          .map(Rule::rhs)
-          .flatMap(Collection::stream)
-          // and their subrules
+          // their invocations
+          Program.invocations(
+            program.clauses().getOrDefault(ri, List.of())
+            .stream())
+          // have names
           .map(RuleInvocation::name)
-          // contain =< or >=
+          // matching =< or >=
           .anyMatch(n -> "=<".equals(n) || ">=".equals(n)))
         // the number of such clauses is 3
         .count() == 3
