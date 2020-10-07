@@ -237,6 +237,32 @@ public class PrintRubric {
         .containsAll(Set.of(2))
         ? 1 : 0);
 
+    // these two will throw NPE if interpolatedSafe not defined
+    // if undesirable, use .getOrDefault("…", List.of()) instead of get()
+    report("interpolatedSafe/1 -> interpolatedSafe/2",
+        5,
+        program.clauses().get("interpolatedSafe")
+        .stream()
+        .filter(r -> r.arity() == 1)
+        .filter(r -> r instanceof Rule)
+        .map(r -> (Rule)r)
+        .map(Rule::rhs)
+        .flatMap(Collection::stream)
+        .anyMatch(ri -> "interpolatedSafe".equals(ri.name()) && ri.arity() == 2)
+        ? 1 : 0);
+
+    report("interpolatedSafe/2 -> interpolatedSafe/3",
+        5,
+        program.clauses().get("interpolatedSafe")
+        .stream()
+        .filter(r -> r.arity() == 2)
+        .filter(r -> r instanceof Rule)
+        .map(r -> (Rule)r)
+        .map(Rule::rhs)
+        .flatMap(Collection::stream)
+        .anyMatch(ri -> "interpolatedSafe".equals(ri.name()) && ri.arity() == 3)
+        ? 1 : 0);
+
   }
 
   private static void report(String name, int points, double degree) {
