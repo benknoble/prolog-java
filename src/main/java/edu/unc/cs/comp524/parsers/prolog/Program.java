@@ -133,20 +133,20 @@ public interface Program {
       .map(Integer::parseInt);
   }
 
-  private static Stream<Rule> rules(Stream<Relation> relations) {
+  public static Stream<Rule> rules(Stream<Relation> relations) {
     return
       relations
       .filter(c -> c instanceof Rule)
       .map(r -> (Rule)r);
   }
 
-  private static Stream<RuleInvocation> invocations(Stream<Relation> relations) {
+  public static Stream<RuleInvocation> invocations(Stream<Relation> relations) {
     return
       rules(relations)
       .flatMap(r -> r.rhs().stream());
   }
 
-  private Stream<Relation> relations() {
+  public default Stream<Relation> relations() {
     return
       clauses()
       .values()
