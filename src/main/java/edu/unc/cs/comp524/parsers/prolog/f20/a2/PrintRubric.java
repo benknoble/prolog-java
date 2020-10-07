@@ -306,6 +306,38 @@ public class PrintRubric {
             .count() == 3))
         ? 1 : 0);
 
+     report("derivedSafe calls safety-checking rules",
+         3,
+        // ∀ clauses of derivedSafe
+        program.clauses().getOrDefault("derivedSafe", List.of())
+        .stream()
+        // which has arity 3
+        .filter(r -> r.arity() == 3)
+        // that are rules
+        .filter(r -> r instanceof Rule)
+        .map(r -> (Rule)r)
+        // ∀ names of rule-invocations of such clauses
+        .map(Rule::rhs)
+        .flatMap(Collection::stream)
+        .map(RuleInvocation::name)
+        // where
+        .filter(ri ->
+          // their clauses
+          program.clauses().getOrDefault(ri, List.of())
+          .stream()
+          // are rules
+          .filter(r -> r instanceof Rule)
+          .map(r -> (Rule)r)
+          .map(Rule::rhs)
+          .flatMap(Collection::stream)
+          // and their subrules
+          .map(RuleInvocation::name)
+          // contain =< or >=
+          .anyMatch(n -> "=<".equals(n) || ">=".equals(n)))
+        // the number of such clauses is 3
+        .count() == 3
+        ? 1 : 0);
+
   }
 
   private static void report(String name, int points, double degree) {
