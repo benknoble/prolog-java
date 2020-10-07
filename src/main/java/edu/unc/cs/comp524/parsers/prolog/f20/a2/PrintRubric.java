@@ -237,11 +237,9 @@ public class PrintRubric {
         .containsAll(Set.of(2))
         ? 1 : 0);
 
-    // these two will throw NPE if interpolatedSafe not defined
-    // if undesirable, use .getOrDefault("…", List.of()) instead of get()
     report("interpolatedSafe/1 -> interpolatedSafe/2",
         5,
-        program.clauses().get("interpolatedSafe")
+        program.clauses().getOrDefault("interpolatedSafe", List.of())
         .stream()
         .filter(r -> r.arity() == 1)
         .filter(r -> r instanceof Rule)
@@ -253,7 +251,7 @@ public class PrintRubric {
 
     report("interpolatedSafe/2 -> interpolatedSafe/3",
         5,
-        program.clauses().get("interpolatedSafe")
+        program.clauses().getOrDefault("interpolatedSafe", List.of())
         .stream()
         .filter(r -> r.arity() == 2)
         .filter(r -> r instanceof Rule)
