@@ -261,6 +261,51 @@ public class PrintRubric {
         .anyMatch(ri -> ri.isInvocationOf("interpolatedSafe", 3))
         ? 1 : 0);
 
+    var givenSizesSubrules =
+      // ∀ clauses of givenSizes
+      program.clauses().getOrDefault("givenSizes", List.of())
+      .stream()
+      // with arity 3
+      .filter(r -> r.arity() == 3)
+      // that are rules
+      .filter(r -> r instanceof Rule)
+      .map(r -> (Rule)r)
+      // ∀ rule-invocations of such clauses
+      .map(Rule::rhs)
+      .flatMap(Collection::stream)
+      // that have arity 3
+      .filter(ri -> ri.arity() == 3)
+      // get the names
+      .map(RuleInvocation::name)
+      .collect(Collectors.toList());
+    report("givenSizes calls column rules",
+        3,
+        // check that there are 3 sub-rules of arity 3
+        givenSizesSubrules.size() == 3 ? 1 : 0);
+    report("givenSizes' column rules call cell rules",
+        9,
+        // ∀ names above
+        givenSizesSubrules
+        .stream()
+        // ∀ relation-lists associated with a name
+        .map(name -> program.clauses().getOrDefault(name, List.of()))
+        // the following holds
+        .allMatch(rs ->
+          rs.stream()
+          // ∀ the rules of arity 3
+          .filter(r -> r.arity() == 3)
+          .filter(r -> r instanceof Rule)
+          .map(r -> (Rule)r)
+          .map(Rule::rhs)
+          // ∃ a collection of rule-invocations
+          .anyMatch(ris ->
+            ris.stream()
+            // of arity 1
+            .filter(ri -> ri.arity() == 1)
+            // such that there are 3 of them
+            .count() == 3))
+        ? 1 : 0);
+
   }
 
   private static void report(String name, int points, double degree) {
