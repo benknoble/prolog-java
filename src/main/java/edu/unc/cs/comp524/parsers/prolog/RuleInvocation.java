@@ -7,4 +7,5 @@ public interface RuleInvocation {
   public List<PrologParser.TermContext> args();
   public int arity();
   public boolean isInvocationOf(Relation r);
+  public boolean isInvocationOf(String name, int arity);
 }

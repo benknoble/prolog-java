@@ -248,7 +248,7 @@ public class PrintRubric {
         .map(r -> (Rule)r)
         .map(Rule::rhs)
         .flatMap(Collection::stream)
-        .anyMatch(ri -> "interpolatedSafe".equals(ri.name()) && ri.arity() == 2)
+        .anyMatch(ri -> ri.isInvocationOf("interpolatedSafe", 2))
         ? 1 : 0);
 
     report("interpolatedSafe/2 -> interpolatedSafe/3",
@@ -260,7 +260,7 @@ public class PrintRubric {
         .map(r -> (Rule)r)
         .map(Rule::rhs)
         .flatMap(Collection::stream)
-        .anyMatch(ri -> "interpolatedSafe".equals(ri.name()) && ri.arity() == 3)
+        .anyMatch(ri -> ri.isInvocationOf("interpolatedSafe", 3))
         ? 1 : 0);
 
   }

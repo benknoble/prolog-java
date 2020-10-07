@@ -48,6 +48,14 @@ public class ARuleInvocation implements RuleInvocation {
   }
 
   @Override
+  public boolean isInvocationOf(String name, int arity){
+    return name() != null
+      && name != null
+      && name().equals(name)
+      && arity() == arity;
+  }
+
+  @Override
   public String toString() {
     return String.format(
         "{\nfunctor: %s/%d,\nargs: %s\n}",
