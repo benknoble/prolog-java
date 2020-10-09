@@ -42,7 +42,10 @@ p_text: (directive | clause) * EOF ;
 
 directive: ':-' term '.' ; // also 3.58
 
-clause: term '.' ; // also 3.33
+clause
+    : term ':-' term '.' # predicate
+    | term '.' # fact
+    ; // also 3.33
 
 
 // Abstract Syntax (6.3): terms formed from tokens
@@ -51,42 +54,169 @@ termlist
     : term ( ',' term )*
     ;
 
-term
-    : VARIABLE          # variable
-    | '(' term ')'      # braced_term
-    | '-'? integer      # integer_term //TODO: negative case should be covered by unary_operator
-    | '-'? FLOAT        # float
-    // structure / compound term
-    | atom '(' termlist ')'     # compound_term
-    | atom ('(' termlist ')')? ':-' termlist # conjuncts
-    |<assoc=right> term operator term        # binary_operator
-    | operator term             # unary_operator
-    | '[' termlist ( '|' term )? ']' # list_term
-    | '{' termlist '}'          # curly_bracketed_term
+term: binary1200;
 
-    | atom              # atom_term
+// 1200  xfx  -->, :-
+binary1200
+    : unary1200 (':-' | '-->') unary1200
+    | unary1200
     ;
 
-//TODO: operator priority, associativity, arity. Filter valid priority ranges for e.g. [list] syntax
-//TODO: modifying operator table
+// 1200  fx   :-, ?-
+unary1200
+    : <assoc=right> (':-' | '?-') unary1150
+    | unary1150
+    ;
 
-operator
-    :  '-->'
-    | '?-'
-    | 'dynamic' | 'multifile' | 'discontiguous' | 'public' //TODO: move operators used in directives to "built-in" definition of dialect
-    | ';'
-    | '->'
-    | '\\+'
-    | '=' | '\\='
-    | '==' | '\\==' | '@<' | '@=<' | '@>' | '@>='
-    | '=..'
-    | 'is' | '=:=' | '=\\=' | '<' | '=<' | '>' | '>='
-    | ':' // modules: 5.2.1
-    | '+' | '-' | '/\\' | '\\/'
-    | '*' | '/' | '//' | 'rem' | 'mod' | '<<' | '>>' //TODO: '/' cannot be used as atom because token here not in GRAPHIC. only works because , is operator too. example: swipl/filesex.pl:177
-    | '**'
-    | '^'
-    | '\\'
+/* 1150  fx
+ * dynamic, discontiguous, initialization, meta_predicate, module_transparent,
+ * multifile, public, thread_local, thread_initialization, volatile
+ */
+unary1150
+    : (
+            'dynamic'
+            | 'discontiguous'
+            | 'initialization'
+            | 'meta_predicate'
+            | 'module_transparent'
+            | 'multifile'
+            | 'public'
+            | 'thread_local'
+            | 'thread_initialization'
+            | 'volatile'
+    ) binaryRight1100
+    | binaryRight1100
+    ;
+
+// 1100  xfy  ;, |
+binaryRight1100
+    : <assoc=right> binaryRight1050 ((';' | '|') binaryRight1100)+
+    | binaryRight1050
+    ;
+
+// 1050  xfy  ->, *->
+binaryRight1050
+    : <assoc=right> binaryRight1000 ('->' | '*->') binaryRight1050
+    | binaryRight1000
+    ;
+
+// 1000  xfy  ,
+binaryRight1000
+    : <assoc=right> binary990 (',' binaryRight1000)+
+    | binary990
+    ;
+
+// 990  xfx  :=
+binary990
+    : unary900 ':=' unary900
+    | unary900
+    ;
+
+// 900  fy   \+
+unary900
+    : <assoc=right> '\\+' unary900
+    | binary700
+    ;
+
+/* 700  xfx  <, =, =.., =@=, \=@=, =:=, =<, ==, =\=, >, >=, @<, @=<, @>, @>=, \=, \==, as,
+ * is, >:<, :<
+ */
+binary700
+    : binaryRight600 (
+            '<'
+            | '='
+            | '=..'
+            | '=@='
+            | '\\=@='
+            | '=:='
+            | '=<'
+            | '=='
+            | '=\\='
+            | '>'
+            | '>='
+            | '@<'
+            | '@=<'
+            | '@>'
+            | '@>='
+            | '\\='
+            | '\\=='
+            | 'as'
+            | 'is'
+            | '>:<'
+            | ':<'
+            ) binaryRight600
+    | binaryRight600
+    ;
+
+// 600  xfy  :
+binaryRight600
+    : <assoc=right> binaryLeft500 ':' binaryRight600
+    | binaryLeft500
+    ;
+
+// 500  yfx  +, -, /\, \/, xor
+binaryLeft500
+    : <assoc=left> binaryLeft500 ('+' | '-' | '/\\' | '\\/' | 'xor') unary500
+    | unary500
+    ;
+
+// 500  fx   ?
+unary500
+    : '?' binaryLeft400
+    | binaryLeft400
+    ;
+
+// 400  yfx  *, /, //, div, rdiv, <<, >>, mod, rem
+binaryLeft400
+    : <assoc=left> binaryLeft400 (
+            '*'
+            | '/'
+            | '//'
+            | 'div'
+            | 'rdiv'
+            | '<<'
+            | '>>'
+            | 'rem'
+            | 'mod'
+            ) binary200
+    | binary200
+    ;
+
+// 200  xfx  **
+binary200
+    : <assoc=right> binaryRight200 '**' binaryRight200
+    | binaryRight200
+    ;
+
+// 200  xfy  ^
+binaryRight200
+    : <assoc=right> unary200 '^' binaryRight200
+    | unary200
+    ;
+
+// 200  fy   +, -, \
+unary200
+    : <assoc=right> ('+' | '-' | '\\') unary200
+    | unary1
+    ;
+
+// 1  fx   $
+unary1
+    : '$' base_term
+    | base_term
+    ;
+
+base_term
+    : VARIABLE          # variable
+    | '(' term ')'      # braced_term
+    | integer      # integer_term
+    | FLOAT        # float
+    // structure / compound term
+    | atom '(' termlist ')'     # compound_term
+    | '[' termlist ']' # list_term
+    | '{' termlist '}'          # curly_bracketed_term
+    // atom
+    | atom              # atom_term
     ;
 
 atom // 6.4.2 and 6.1.2
