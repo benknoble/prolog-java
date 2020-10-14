@@ -16,13 +16,13 @@ public class ParserUtils {
 
   public static final ParseTreePattern rulePattern(PrologParser parser) {
     return parser.compileParseTreePattern(
-        "<atom>(<termlist>) :- <termlist>.",
+        "<atom>(<termlist>) :- <term>.",
         PrologParser.RULE_clause);
   }
 
   public static final ParseTreePattern rule0Pattern(PrologParser parser) {
     return parser.compileParseTreePattern(
-        "<atom> :- <termlist>.",
+        "<atom> :- <term>.",
         PrologParser.RULE_clause);
   }
 
