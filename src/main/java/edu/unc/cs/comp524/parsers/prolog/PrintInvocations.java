@@ -21,6 +21,9 @@ public class PrintInvocations
     System.out.println("invocations of rules");
     var applicationPattern = ParserUtils.invocationPattern(parser);
     // var binopPattern = ParserUtils.binopPattern(parser);
+    var leqPat = parser.compileParseTreePattern(
+        "<binaryRight600> =\\< <binaryRight600>",
+        PrologParser.RULE_binary700);
     // var unopPattern = ParserUtils.unopPattern(parser);
     ParseTreeWalker.DEFAULT.walk(new PrologBaseListener() {
       @Override
@@ -36,6 +39,9 @@ public class PrintInvocations
         // System.out.println("== binops");
         // binopPattern.findAll(rhs, "//*").stream()
         //   .forEach(m -> System.out.println(m.getTree().getText()));
+        System.out.println("== leq (=<)");
+        leqPat.findAll(rhs, "//*").stream()
+          .forEach(m -> System.out.println(m.getTree().getText()));
         // System.out.println("== unops?");
         // unopPattern.findAll(rhs, "//*").stream()
         //   .forEach(m -> System.out.println(m.getTree().getText()));
