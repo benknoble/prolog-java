@@ -24,11 +24,11 @@ public class PrintInvocations
     var unopPattern = ParserUtils.unopPattern(parser);
     ParseTreeWalker.DEFAULT.walk(new PrologBaseListener() {
       @Override
-      public void enterConjuncts(PrologParser.ConjunctsContext ctx) {
+      public void enterPredicate(PrologParser.PredicateContext ctx) {
         System.out.println("------------------");
-        System.out.println(ctx.atom().getText());
+        System.out.println(ctx.term(0).getText());
         System.out.println("------------------");
-        var rhs = ctx.termlist(1);
+        var rhs = ctx.term(1);
         System.out.println("== applications");
         applicationPattern.findAll(rhs, "//*").stream()
           .forEach(m -> System.out.println(m.getTree().getText()));
