@@ -32,18 +32,6 @@ public class ParserUtils {
         PrologParser.RULE_base_term);
   }
 
-  public static final ParseTreePattern binopPattern(PrologParser parser) {
-    return parser.compileParseTreePattern(
-        "<term> <operator> <term>",
-        PrologParser.RULE_term);
-  }
-
-  public static final ParseTreePattern unopPattern(PrologParser parser) {
-    return parser.compileParseTreePattern(
-        "<operator> <term>",
-        PrologParser.RULE_term);
-  }
-
   public static int countLines(final Token t) {
     return t.getText().split("\n").length - 1;
   }

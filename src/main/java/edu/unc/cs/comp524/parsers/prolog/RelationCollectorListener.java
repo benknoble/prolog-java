@@ -20,8 +20,6 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
   private final ParseTreePattern rulePattern;
   private final ParseTreePattern rule0Pattern;
   private final ParseTreePattern invocationPattern;
-  private final ParseTreePattern binopPattern;
-  private final ParseTreePattern unopPattern;
   private List<Relation> relations;
 
   public RelationCollectorListener(
@@ -34,8 +32,6 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     rulePattern = ParserUtils.rulePattern(parser);
     rule0Pattern = ParserUtils.rule0Pattern(parser);
     invocationPattern = ParserUtils.invocationPattern(parser);
-    binopPattern = ParserUtils.binopPattern(parser);
-    unopPattern = ParserUtils.unopPattern(parser);
     relations = new ArrayList<>();
   }
 
@@ -91,9 +87,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
   //         args,
   //         comment,
   //         ParserUtils.join(
-  //           invocations(body),
-  //           binops(body),
-  //           unops(body))));
+  //           invocations(body))));
   // }
 
   // private void handleRule0(
@@ -108,9 +102,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
   //         List.of(),
   //         comment,
   //         ParserUtils.join(
-  //           invocations(body),
-  //           binops(body),
-  //           unops(body))));
+  //           invocations(body))));
   // }
 
   private Optional<Comment> comment(PrologParser.ClauseContext ctx) {
@@ -150,28 +142,6 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
           m -> new ARuleInvocation(
             (PrologParser.AtomContext)m.get("atom"),
             (PrologParser.TermlistContext)m.get("termlist")));
-  }
-
-  private List<RuleInvocation> binops(PrologParser.TermlistContext body) {
-    return
-      matchPattern(
-          binopPattern,
-          body,
-          m -> new ARuleInvocation(
-               m.get("operator").getText(),
-               m.getAll("term").stream()
-                .map(tree -> (PrologParser.TermContext)tree)
-                .collect(Collectors.toList())));
-  }
-
-  private List<RuleInvocation> unops(PrologParser.TermlistContext body) {
-    return
-      matchPattern(
-          unopPattern,
-          body,
-          m -> new ARuleInvocation(
-               m.get("operator").getText(),
-               List.of((PrologParser.TermContext)m.get("term"))));
   }
 
 }
