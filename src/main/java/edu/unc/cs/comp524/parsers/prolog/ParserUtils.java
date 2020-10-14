@@ -29,7 +29,7 @@ public class ParserUtils {
   public static final ParseTreePattern invocationPattern(PrologParser parser) {
     return parser.compileParseTreePattern(
         "<atom>(<termlist>)",
-        PrologParser.RULE_term);
+        PrologParser.RULE_base_term);
   }
 
   public static final ParseTreePattern binopPattern(PrologParser parser) {
