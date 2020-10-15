@@ -20,9 +20,6 @@ public class PrintInvocations
 
     System.out.println("invocations of rules");
     var applicationPattern = ParserUtils.invocationPattern(parser);
-    var leqPat = parser.compileParseTreePattern(
-        "<binaryRight600> =\\< <binaryRight600>",
-        PrologParser.RULE_binary700);
     ParseTreeWalker.DEFAULT.walk(new PrologBaseListener() {
       @Override
       public void enterPredicate(PrologParser.PredicateContext ctx) {
@@ -34,9 +31,11 @@ public class PrintInvocations
         System.out.println("== applications");
         applicationPattern.findAll(rhs, "//*").stream()
           .forEach(m -> System.out.println(m.getTree().getText()));
-        System.out.println("== leq (=<)");
-        leqPat.findAll(rhs, "//*").stream()
-          .forEach(m -> System.out.println(m.getTree().getText()));
+        System.out.println("== known operators");
+        InvocationMatcher.invocationMatchers(parser)
+          .stream()
+          .flatMap(i -> i.invocations(rhs).stream())
+          .forEach(ri -> System.out.println(ri));
       }
     }, tree);
 
