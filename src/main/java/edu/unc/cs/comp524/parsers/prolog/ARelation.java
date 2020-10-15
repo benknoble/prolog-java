@@ -3,10 +3,12 @@ package edu.unc.cs.comp524.parsers.prolog;
 import java.util.*;
 import java.util.stream.*;
 
+import org.antlr.v4.runtime.tree.*;
+
 public abstract class ARelation implements Relation {
 
   private final String name;
-  private final List<PrologParser.TermContext> args;
+  private final List<ParseTree> args;
   private final Optional<Comment> comment;
 
   public ARelation(
@@ -21,7 +23,7 @@ public abstract class ARelation implements Relation {
 
   public ARelation(
       final String name,
-      final List<PrologParser.TermContext> args,
+      final List<ParseTree> args,
       final Optional<Comment> comment)
   {
     this.name = name;
@@ -36,7 +38,7 @@ public abstract class ARelation implements Relation {
   }
 
   @Override
-  public List<PrologParser.TermContext> args() {
+  public List<ParseTree> args() {
     return args;
   }
 
@@ -56,7 +58,7 @@ public abstract class ARelation implements Relation {
         "{\nfunctor: %s/%d,\nargs: %s,\ncomment: %s\n}",
         name(), arity(),
         args().stream()
-        .map(PrologParser.TermContext::getText)
+        .map(ParseTree::getText)
         .collect(Collectors.toList()),
         comment());
   }

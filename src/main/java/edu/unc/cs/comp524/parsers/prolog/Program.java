@@ -6,6 +6,7 @@ import java.util.function.*;
 import java.util.regex.*;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
 
 public interface Program {
   public Map<String, List<Relation>> clauses();
@@ -107,7 +108,7 @@ public interface Program {
       .allMatch(r ->
           r.args()
           .stream()
-          .map(ParserRuleContext::getText)
+          .map(ParseTree::getText)
           .flatMap(Program::getAllNums)
           .allMatch(Program::allowedNumber)
 
@@ -116,7 +117,7 @@ public interface Program {
           r.rhs()
           .stream()
           .flatMap(ri -> ri.args().stream())
-          .map(ParserRuleContext::getText)
+          .map(ParseTree::getText)
           .flatMap(Program::getAllNums)
           .allMatch(Program::allowedNumber));
   }

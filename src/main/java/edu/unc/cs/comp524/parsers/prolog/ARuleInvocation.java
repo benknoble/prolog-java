@@ -3,6 +3,8 @@ package edu.unc.cs.comp524.parsers.prolog;
 import java.util.*;
 import java.util.stream.*;
 
+import org.antlr.v4.runtime.tree.*;
+
 public class ARuleInvocation implements RuleInvocation {
   private final Fact fact;
 
@@ -15,7 +17,7 @@ public class ARuleInvocation implements RuleInvocation {
 
   public ARuleInvocation(
       final String name,
-      final List<PrologParser.TermContext> args)
+      final List<ParseTree> args)
   {
     fact = new AFact(name, args, Optional.empty());
   }
@@ -30,7 +32,7 @@ public class ARuleInvocation implements RuleInvocation {
   }
 
   @Override
-  public List<PrologParser.TermContext> args(){
+  public List<ParseTree> args(){
     return fact.args();
   }
 
@@ -61,7 +63,7 @@ public class ARuleInvocation implements RuleInvocation {
         "{\nfunctor: %s/%d,\nargs: %s\n}",
         fact.name(), fact.arity(),
         fact.args().stream()
-        .map(PrologParser.TermContext::getText)
+        .map(ParseTree::getText)
         .collect(Collectors.toList()));
   }
 }
