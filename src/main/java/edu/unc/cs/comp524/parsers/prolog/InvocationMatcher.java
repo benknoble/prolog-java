@@ -30,23 +30,31 @@ public interface InvocationMatcher {
 
 }
 
-class LEQ implements InvocationMatcher {
-  private final static String name = "=<";
-  private final static String pattern =
-    "<lhs:binaryRight600> =\\< <rhs:binaryRight600>";
+abstract class BaseInvocationMatcher implements InvocationMatcher {
+  private final String name;
+  private final ParseTreePattern pattern;
 
-  private ParseTreePattern compiled;
-  LEQ(PrologParser parser) {
-    compiled = parser.compileParseTreePattern(
-        pattern,
-        PrologParser.RULE_binary700);
+  BaseInvocationMatcher(String name, String pattern, int rule, PrologParser parser) {
+    this.name = name;
+    this.pattern = parser.compileParseTreePattern(pattern, rule);
   }
 
   @Override
   public String name() { return name; }
 
   @Override
-  public ParseTreePattern pattern() { return compiled; }
+  public ParseTreePattern pattern() { return pattern; }
+
+}
+
+class LEQ extends BaseInvocationMatcher {
+  LEQ(PrologParser parser) {
+    super(
+        "=<",
+        "<lhs:binaryRight600> =\\< <rhs:binaryRight600>",
+        PrologParser.RULE_binary700,
+        parser);
+  }
 
   @Override
   public List<ParseTree> getArgs(ParseTreeMatch m) {
