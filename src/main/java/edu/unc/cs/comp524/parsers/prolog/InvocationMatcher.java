@@ -47,11 +47,19 @@ abstract class BaseInvocationMatcher implements InvocationMatcher {
 
 }
 
-class LEQ extends BaseInvocationMatcher {
-  LEQ(PrologParser parser) {
+abstract class Binary700 extends BaseInvocationMatcher {
+  Binary700(String name, PrologParser parser) {
     super(
-        "=<",
-        "<lhs:binaryRight600> =\\< <rhs:binaryRight600>",
+        name,
+        String.format("<lhs:binaryRight600> %s <rhs:binaryRight600>", name),
+        PrologParser.RULE_binary700,
+        parser);
+  }
+
+  Binary700(String name, String operator, PrologParser parser) {
+    super(
+        name,
+        String.format("<lhs:binaryRight600> %s <rhs:binaryRight600>", operator),
         PrologParser.RULE_binary700,
         parser);
   }
@@ -59,5 +67,11 @@ class LEQ extends BaseInvocationMatcher {
   @Override
   public List<ParseTree> getArgs(ParseTreeMatch m) {
     return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class LEQ extends Binary700 {
+  LEQ(PrologParser parser) {
+    super("=<", "=\\<", parser);
   }
 }
