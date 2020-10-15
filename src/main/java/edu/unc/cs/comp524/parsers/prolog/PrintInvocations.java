@@ -32,7 +32,7 @@ public class PrintInvocations
         applicationPattern.findAll(rhs, "//*").stream()
           .forEach(m -> System.out.println(m.getTree().getText()));
         System.out.println("== known operators");
-        InvocationMatcher.invocationMatchers(parser)
+        InvocationMatcher.invocationMatchers(parser, lexer)
           .stream()
           .flatMap(i -> i.invocations(rhs).stream())
           .forEach(ri -> System.out.println(ri));

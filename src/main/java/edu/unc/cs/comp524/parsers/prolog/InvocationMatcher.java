@@ -22,9 +22,34 @@ public interface InvocationMatcher {
       .collect(Collectors.toList());
   }
 
-  public static List<InvocationMatcher> invocationMatchers(PrologParser p) {
+  public static List<InvocationMatcher> invocationMatchers(PrologParser p, PrologLexer l) {
+    var m = new ParseTreePatternMatcher(l, p);
+    m.setDelimiters("<", ">", "`");
     return List.of(
-        new LEQ(p)
+
+        // binary700
+        new LT(m),
+        new EQ(m),
+        new EQDD(m),
+        new EQATEQ(m),
+        new NEQATEQ(m),
+        new EQCEQ(m),
+        new LEQ(m),
+        new EQEQ(m),
+        new EQNEQ(m),
+        new GT(m),
+        new GEQ(m),
+        new ATLT(m),
+        new ATLEQ(m),
+        new ATGT(m),
+        new ATGEQ(m),
+        new NEQ(m),
+        new NEQEQ(m),
+        new AS(m),
+        new IS(m),
+        new GTCLT(m),
+        new CLT(m)
+
         );
   }
 
@@ -34,9 +59,9 @@ abstract class BaseInvocationMatcher implements InvocationMatcher {
   private final String name;
   private final ParseTreePattern pattern;
 
-  BaseInvocationMatcher(String name, String pattern, int rule, PrologParser parser) {
+  BaseInvocationMatcher(String name, String pattern, int rule, ParseTreePatternMatcher m) {
     this.name = name;
-    this.pattern = parser.compileParseTreePattern(pattern, rule);
+    this.pattern = m.compile(pattern, rule);
   }
 
   @Override
@@ -47,21 +72,22 @@ abstract class BaseInvocationMatcher implements InvocationMatcher {
 
 }
 
+// binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
-  Binary700(String name, PrologParser parser) {
+  Binary700(String name, ParseTreePatternMatcher m) {
     super(
         name,
         String.format("<lhs:binaryRight600> %s <rhs:binaryRight600>", name),
         PrologParser.RULE_binary700,
-        parser);
+        m);
   }
 
-  Binary700(String name, String operator, PrologParser parser) {
+  Binary700(String name, String operator, ParseTreePatternMatcher m) {
     super(
         name,
         String.format("<lhs:binaryRight600> %s <rhs:binaryRight600>", operator),
         PrologParser.RULE_binary700,
-        parser);
+        m);
   }
 
   @Override
@@ -70,8 +96,129 @@ abstract class Binary700 extends BaseInvocationMatcher {
   }
 }
 
-class LEQ extends Binary700 {
-  LEQ(PrologParser parser) {
-    super("=<", "=\\<", parser);
+class LT extends Binary700 {
+  LT(ParseTreePatternMatcher m) {
+    super("<", "`<", m);
   }
 }
+
+class EQ extends Binary700 {
+  EQ(ParseTreePatternMatcher m) {
+    super("=", m);
+  }
+}
+
+class EQDD extends Binary700 {
+  EQDD(ParseTreePatternMatcher m) {
+    super("=..", m);
+  }
+}
+
+class EQATEQ extends Binary700 {
+  EQATEQ(ParseTreePatternMatcher m) {
+    super("=@=", m);
+  }
+}
+
+class NEQATEQ extends Binary700 {
+  NEQATEQ(ParseTreePatternMatcher m) {
+    super("\\=@=", m);
+  }
+}
+
+class EQCEQ extends Binary700 {
+  EQCEQ(ParseTreePatternMatcher m) {
+    super("=:=", m);
+  }
+}
+
+class LEQ extends Binary700 {
+  LEQ(ParseTreePatternMatcher m) {
+    super("=<", "=`<", m);
+  }
+}
+
+class EQEQ extends Binary700 {
+  EQEQ(ParseTreePatternMatcher m) {
+    super("==", m);
+  }
+}
+
+class EQNEQ extends Binary700 {
+  EQNEQ(ParseTreePatternMatcher m) {
+    super("=\\=", m);
+  }
+}
+
+class GT extends Binary700 {
+  GT(ParseTreePatternMatcher m) {
+    super(">", "`>", m);
+  }
+}
+
+class GEQ extends Binary700 {
+  GEQ(ParseTreePatternMatcher m) {
+    super(">=", "`>=", m);
+  }
+}
+
+class ATLT extends Binary700 {
+  ATLT(ParseTreePatternMatcher m) {
+    super("@<", "@`<", m);
+  }
+}
+
+class ATLEQ extends Binary700 {
+  ATLEQ(ParseTreePatternMatcher m) {
+    super("@=<", "@=`<", m);
+  }
+}
+
+class ATGT extends Binary700 {
+  ATGT(ParseTreePatternMatcher m) {
+    super("@>", "@`>", m);
+  }
+}
+
+class ATGEQ extends Binary700 {
+  ATGEQ(ParseTreePatternMatcher m) {
+    super("@>=", "@`>=", m);
+  }
+}
+
+class NEQ extends Binary700 {
+  NEQ(ParseTreePatternMatcher m) {
+    super("\\=", m);
+  }
+}
+
+class NEQEQ extends Binary700 {
+  NEQEQ(ParseTreePatternMatcher m) {
+    super("\\==", m);
+  }
+}
+
+class AS extends Binary700 {
+  AS(ParseTreePatternMatcher m) {
+    super("as", m);
+  }
+}
+
+class IS extends Binary700 {
+  IS(ParseTreePatternMatcher m) {
+    super("is", m);
+  }
+}
+
+class GTCLT extends Binary700 {
+  GTCLT(ParseTreePatternMatcher m) {
+    super(">:<", "`>:`<", m);
+  }
+}
+
+class CLT extends Binary700 {
+  CLT(ParseTreePatternMatcher m) {
+    super(":<", ":`<", m);
+  }
+}
+// }}}
