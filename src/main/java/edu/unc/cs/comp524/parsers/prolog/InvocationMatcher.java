@@ -47,6 +47,10 @@ public interface InvocationMatcher {
         new THREADINITIALIZATION(m),
         new VOLATILE(m),
 
+        // binaryRight1100
+        new SEMI(m),
+        new BAR(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -242,6 +246,35 @@ class VOLATILE extends Unary1150 {
   }
 }
 // unary1150 }}}
+
+// binaryRight1100 {{{
+abstract class BinaryRight1100 extends BaseInvocationMatcher {
+  BinaryRight1100(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryRight1050> %s <rhs:binaryRight1050>", name),
+        PrologParser.RULE_binaryRight1100,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class SEMI extends BinaryRight1100 {
+  SEMI(ParseTreePatternMatcher m) {
+    super(";", m);
+  }
+}
+
+class BAR extends BinaryRight1100 {
+  BAR(ParseTreePatternMatcher m) {
+    super("|", m);
+  }
+}
+// binaryRight1100 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
