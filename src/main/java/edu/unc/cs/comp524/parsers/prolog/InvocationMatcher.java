@@ -35,6 +35,18 @@ public interface InvocationMatcher {
         new UnaryCEQ(m),
         new QH(m),
 
+        // unary1150
+        new DYNAMIC(m),
+        new DISCONTIGUOUS(m),
+        new INITIALIZATION(m),
+        new METAPREDICATE(m),
+        new MODULETRANSPARENT(m),
+        new MULTIFILE(m),
+        new PUBLIC(m),
+        new THREADLOCAL(m),
+        new THREADINITIALIZATION(m),
+        new VOLATILE(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -153,6 +165,83 @@ class QH extends Binary1200 {
   }
 }
 // unary1200 }}}
+
+// unary1150 {{{
+abstract class Unary1150 extends BaseInvocationMatcher {
+  Unary1150(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:binaryRight1100>", name),
+        PrologParser.RULE_unary1150,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("rhs"));
+  }
+}
+
+class DYNAMIC extends Unary1150 {
+  DYNAMIC(ParseTreePatternMatcher m) {
+    super("dynamic", m);
+  }
+}
+
+class DISCONTIGUOUS extends Unary1150 {
+  DISCONTIGUOUS(ParseTreePatternMatcher m) {
+    super("discontiguous", m);
+  }
+}
+
+class INITIALIZATION extends Unary1150 {
+  INITIALIZATION(ParseTreePatternMatcher m) {
+    super("initialization", m);
+  }
+}
+
+class METAPREDICATE extends Unary1150 {
+  METAPREDICATE(ParseTreePatternMatcher m) {
+    super("meta_predicate", m);
+  }
+}
+
+class MODULETRANSPARENT extends Unary1150 {
+  MODULETRANSPARENT(ParseTreePatternMatcher m) {
+    super("module_transparent", m);
+  }
+}
+
+class MULTIFILE extends Unary1150 {
+  MULTIFILE(ParseTreePatternMatcher m) {
+    super("multfile", m);
+  }
+}
+
+class PUBLIC extends Unary1150 {
+  PUBLIC(ParseTreePatternMatcher m) {
+    super("public", m);
+  }
+}
+
+class THREADLOCAL extends Unary1150 {
+  THREADLOCAL(ParseTreePatternMatcher m) {
+    super("thread_local", m);
+  }
+}
+
+class THREADINITIALIZATION extends Unary1150 {
+  THREADINITIALIZATION(ParseTreePatternMatcher m) {
+    super("thread_initialization", m);
+  }
+}
+
+class VOLATILE extends Unary1150 {
+  VOLATILE(ParseTreePatternMatcher m) {
+    super("volatile", m);
+  }
+}
+// unary1150 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
