@@ -214,7 +214,7 @@ class UnaryCH extends Unary1200 {
   }
 }
 
-class QH extends Binary1200 {
+class QH extends Unary1200 {
   QH(ParseTreePatternMatcher m) {
     super("?-", m);
   }
@@ -269,7 +269,7 @@ class MODULETRANSPARENT extends Unary1150 {
 
 class MULTIFILE extends Unary1150 {
   MULTIFILE(ParseTreePatternMatcher m) {
-    super("multfile", m);
+    super("multifile", m);
   }
 }
 
@@ -369,7 +369,7 @@ abstract class BinaryRight1000 extends BaseInvocationMatcher {
   BinaryRight1000(String name, ParseTreePatternMatcher m) {
     super(
         name,
-        String.format("<lhs:binaryRight990> %s <rhs:binaryRight1000>", name),
+        String.format("<lhs:binary990> %s <rhs:binaryRight1000>", name),
         PrologParser.RULE_binaryRight1000,
         m);
   }
