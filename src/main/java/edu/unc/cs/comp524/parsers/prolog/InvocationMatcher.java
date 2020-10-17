@@ -109,7 +109,10 @@ public interface InvocationMatcher {
         new LTLT(m),
         new GTGT(m),
         new REM(m),
-        new MOD(m)
+        new MOD(m),
+
+        // binary200
+        new SS(m)
 
         );
   }
@@ -742,3 +745,26 @@ class MOD extends BinaryLeft400 {
   }
 }
 // binaryLeft400 }}}
+
+// binary200 {{{
+abstract class Binary200 extends BaseInvocationMatcher {
+  Binary200(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryRight200> %s <rhs:binaryRight200>", name),
+        PrologParser.RULE_binary200,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class SS extends Binary200 {
+  SS(ParseTreePatternMatcher m) {
+    super("**", m);
+  }
+}
+// binary200 }}}
