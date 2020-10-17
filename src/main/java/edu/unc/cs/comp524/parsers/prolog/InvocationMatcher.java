@@ -29,7 +29,7 @@ public interface InvocationMatcher {
 
         // binary1200
         new BinaryCEQ(m),
-        new HARROW(m),
+        new HHARROW(m),
 
         // unary1200
         new UnaryCEQ(m),
@@ -50,6 +50,10 @@ public interface InvocationMatcher {
         // binaryRight1100
         new SEMI(m),
         new BAR(m),
+
+        // binaryRight1050
+        new HARROW(m),
+        new SHARROW(m),
 
         // binary700
         new LT(m),
@@ -126,8 +130,8 @@ class BinaryCEQ extends Binary1200 {
   }
 }
 
-class HARROW extends Binary1200 {
-  HARROW(ParseTreePatternMatcher m) {
+class HHARROW extends Binary1200 {
+  HHARROW(ParseTreePatternMatcher m) {
     super("-->", "--`>", m);
   }
 }
@@ -275,6 +279,43 @@ class BAR extends BinaryRight1100 {
   }
 }
 // binaryRight1100 }}}
+
+// binaryRight1050 {{{
+abstract class BinaryRight1050 extends BaseInvocationMatcher {
+  BinaryRight1050(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryRight1000> %s <rhs:binaryRight1000>", name),
+        PrologParser.RULE_binaryRight1050,
+        m);
+  }
+
+  BinaryRight1050(String name, String operator, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryRight1000> %s <rhs:binaryRight1000>", operator),
+        PrologParser.RULE_unary1200,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class HARROW extends BinaryRight1050 {
+  HARROW(ParseTreePatternMatcher m) {
+    super("->", "-`>", m);
+  }
+}
+
+class SHARROW extends BinaryRight1050 {
+  SHARROW(ParseTreePatternMatcher m) {
+    super("*->", "*-`>", m);
+  }
+}
+// binaryRight1050 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
