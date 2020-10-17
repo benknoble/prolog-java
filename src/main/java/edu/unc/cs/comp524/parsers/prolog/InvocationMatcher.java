@@ -61,6 +61,9 @@ public interface InvocationMatcher {
         // binary990
         new CEQ(m),
 
+        // unary900
+        new NOT(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -368,6 +371,30 @@ class CEQ extends Binary990 {
   }
 }
 // binary990 }}}
+
+// unary900 {{{
+abstract class Unary900 extends BaseInvocationMatcher {
+  Unary900(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:unary900>", name),
+        PrologParser.RULE_unary900,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("rhs"));
+  }
+}
+
+class NOT extends Unary900 {
+  NOT(ParseTreePatternMatcher m) {
+    super("\\+", m);
+  }
+}
+
+// unary900 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
