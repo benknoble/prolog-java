@@ -55,6 +55,9 @@ public interface InvocationMatcher {
         new HARROW(m),
         new SHARROW(m),
 
+        // binaryRight1000
+        new COMMA(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -316,6 +319,29 @@ class SHARROW extends BinaryRight1050 {
   }
 }
 // binaryRight1050 }}}
+
+// binaryRight1000 {{{
+abstract class BinaryRight1000 extends BaseInvocationMatcher {
+  BinaryRight1000(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryRight990> %s <rhs:binaryRight1000>", name),
+        PrologParser.RULE_binaryRight1000,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class COMMA extends BinaryRight1000 {
+  COMMA(ParseTreePatternMatcher m) {
+    super(",", m);
+  }
+}
+// binaryRight1000 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
