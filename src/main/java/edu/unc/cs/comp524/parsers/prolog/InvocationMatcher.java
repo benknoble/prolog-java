@@ -27,6 +27,10 @@ public interface InvocationMatcher {
     m.setDelimiters("<", ">", "`");
     return List.of(
 
+        // binary1200
+        new BinaryCEQ(m),
+        new HARROW(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -71,6 +75,43 @@ abstract class BaseInvocationMatcher implements InvocationMatcher {
   public ParseTreePattern pattern() { return pattern; }
 
 }
+
+// binary1200 {{{
+abstract class Binary1200 extends BaseInvocationMatcher {
+  Binary1200(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:unary1200> %s <rhs:unary1200>", name),
+        PrologParser.RULE_binary1200,
+        m);
+  }
+
+  Binary1200(String name, String operator, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:unary1200> %s <rhs:unary1200>", operator),
+        PrologParser.RULE_binary1200,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class BinaryCEQ extends Binary1200 {
+  BinaryCEQ(ParseTreePatternMatcher m) {
+    super(":-", m);
+  }
+}
+
+class HARROW extends Binary1200 {
+  HARROW(ParseTreePatternMatcher m) {
+    super("-->", "--`>", m);
+  }
+}
+// binary1200 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
