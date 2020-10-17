@@ -88,7 +88,14 @@ public interface InvocationMatcher {
         new CLT(m),
 
         // binaryRight600
-        new C(m)
+        new C(m),
+
+        // binaryLeft500
+        new BinaryPLUS(m),
+        new BinaryH(m),
+        new AND(m),
+        new OR(m),
+        new XOR(m)
 
         );
   }
@@ -572,3 +579,50 @@ class C extends BinaryRight600 {
   }
 }
 // binaryRight600 }}}
+
+// binaryLeft500 {{{
+abstract class BinaryLeft500 extends BaseInvocationMatcher {
+  BinaryLeft500(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryLeft500> %s <rhs:unary500>", name),
+        PrologParser.RULE_binaryLeft500,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class BinaryPLUS extends BinaryLeft500 {
+  BinaryPLUS(ParseTreePatternMatcher m) {
+    super("+", m);
+  }
+}
+
+class BinaryH extends BinaryLeft500 {
+  BinaryH(ParseTreePatternMatcher m) {
+    super("-", m);
+  }
+}
+
+class AND extends BinaryLeft500 {
+  AND(ParseTreePatternMatcher m) {
+    super("/\\", m);
+  }
+}
+
+class OR extends BinaryLeft500 {
+  OR(ParseTreePatternMatcher m) {
+    super("\\/", m);
+  }
+}
+
+class XOR extends BinaryLeft500 {
+  XOR(ParseTreePatternMatcher m) {
+    super("xor", m);
+  }
+}
+// binaryLeft500 }}}
