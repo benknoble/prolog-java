@@ -120,7 +120,10 @@ public interface InvocationMatcher {
         // unary200
         new UnaryPLUS(m),
         new UnaryH(m),
-        new BSLASH(m)
+        new BSLASH(m),
+
+        // unary1
+        new DOLLAR(m)
 
         );
   }
@@ -834,3 +837,26 @@ class BSLASH extends Unary200 {
   }
 }
 // unary200 }}}
+
+// unary1 {{{
+abstract class Unary1 extends BaseInvocationMatcher {
+  Unary1(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:base_term>", name),
+        PrologParser.RULE_unary1,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("rhs"));
+  }
+}
+
+class DOLLAR extends Unary1 {
+  DOLLAR(ParseTreePatternMatcher m) {
+    super("$", m);
+  }
+}
+// unary1 }}}
