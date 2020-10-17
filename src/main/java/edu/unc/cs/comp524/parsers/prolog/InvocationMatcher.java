@@ -256,7 +256,7 @@ abstract class BinaryRight1100 extends BaseInvocationMatcher {
   BinaryRight1100(String name, ParseTreePatternMatcher m) {
     super(
         name,
-        String.format("<lhs:binaryRight1050> %s <rhs:binaryRight1050>", name),
+        String.format("<lhs:binaryRight1050> %s <rhs:binaryRight1100>", name),
         PrologParser.RULE_binaryRight1100,
         m);
   }
@@ -285,7 +285,7 @@ abstract class BinaryRight1050 extends BaseInvocationMatcher {
   BinaryRight1050(String name, ParseTreePatternMatcher m) {
     super(
         name,
-        String.format("<lhs:binaryRight1000> %s <rhs:binaryRight1000>", name),
+        String.format("<lhs:binaryRight1000> %s <rhs:binaryRight1050>", name),
         PrologParser.RULE_binaryRight1050,
         m);
   }
@@ -293,8 +293,8 @@ abstract class BinaryRight1050 extends BaseInvocationMatcher {
   BinaryRight1050(String name, String operator, ParseTreePatternMatcher m) {
     super(
         name,
-        String.format("<lhs:binaryRight1000> %s <rhs:binaryRight1000>", operator),
-        PrologParser.RULE_unary1200,
+        String.format("<lhs:binaryRight1000> %s <rhs:binaryRight1050>", operator),
+        PrologParser.RULE_binaryRight1050,
         m);
   }
 
