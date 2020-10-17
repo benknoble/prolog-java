@@ -95,7 +95,10 @@ public interface InvocationMatcher {
         new BinaryH(m),
         new AND(m),
         new OR(m),
-        new XOR(m)
+        new XOR(m),
+
+        // unary500
+        new Q(m)
 
         );
   }
@@ -626,3 +629,26 @@ class XOR extends BinaryLeft500 {
   }
 }
 // binaryLeft500 }}}
+
+// unary500 {{{
+abstract class Unary500 extends BaseInvocationMatcher {
+  Unary500(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:binaryLeft400>", name),
+        PrologParser.RULE_unary500,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("rhs"));
+  }
+}
+
+class Q extends Unary500 {
+  Q(ParseTreePatternMatcher m) {
+    super("?", m);
+  }
+}
+// unary500 }}}
