@@ -58,6 +58,9 @@ public interface InvocationMatcher {
         // binaryRight1000
         new COMMA(m),
 
+        // binary990
+        new CEQ(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -342,6 +345,29 @@ class COMMA extends BinaryRight1000 {
   }
 }
 // binaryRight1000 }}}
+
+// binary990 {{{
+abstract class Binary990 extends BaseInvocationMatcher {
+  Binary990(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:unary900> %s <rhs:unary900>", name),
+        PrologParser.RULE_binary990,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class CEQ extends Binary990 {
+  CEQ(ParseTreePatternMatcher m) {
+    super(":=", m);
+  }
+}
+// binary990 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
