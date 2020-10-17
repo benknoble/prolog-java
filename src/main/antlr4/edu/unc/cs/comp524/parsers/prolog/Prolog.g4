@@ -32,6 +32,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 grammar Prolog;
 
+@parser::members {
+boolean intermlist = false;
+}
+
 @lexer::members {
 public static final int COMMENTCH = 1;
 }
@@ -51,7 +55,8 @@ clause
 // Abstract Syntax (6.3): terms formed from tokens
 
 termlist
-    : term ( ',' term )*
+    : {intermlist = true;} term {intermlist = false;}
+      ( ',' {intermlist = true;} term {intermlist = false;})*
     ;
 
 term: binary1200;
@@ -102,7 +107,7 @@ binaryRight1050
 
 // 1000  xfy  ,
 binaryRight1000
-    : <assoc=right> binary990 (',' binaryRight1000)+
+    : <assoc=right> {!intermlist}? binary990 (',' binaryRight1000)+
     | binary990
     ;
 
