@@ -28,11 +28,11 @@ public interface InvocationMatcher {
     return List.of(
 
         // binary1200
-        new BinaryCEQ(m),
+        new BinaryCH(m),
         new HHARROW(m),
 
         // unary1200
-        new UnaryCEQ(m),
+        new UnaryCH(m),
         new QH(m),
 
         // unary1150
@@ -130,8 +130,8 @@ abstract class Binary1200 extends BaseInvocationMatcher {
   }
 }
 
-class BinaryCEQ extends Binary1200 {
-  BinaryCEQ(ParseTreePatternMatcher m) {
+class BinaryCH extends Binary1200 {
+  BinaryCH(ParseTreePatternMatcher m) {
     super(":-", m);
   }
 }
@@ -167,8 +167,8 @@ abstract class Unary1200 extends BaseInvocationMatcher {
   }
 }
 
-class UnaryCEQ extends Unary1200 {
-  UnaryCEQ(ParseTreePatternMatcher m) {
+class UnaryCH extends Unary1200 {
+  UnaryCH(ParseTreePatternMatcher m) {
     super(":-", m);
   }
 }
