@@ -115,7 +115,12 @@ public interface InvocationMatcher {
         new SS(m),
 
         // binaryRight200
-        new CARET(m)
+        new CARET(m),
+
+        // unary200
+        new UnaryPLUS(m),
+        new UnaryH(m),
+        new BSLASH(m)
 
         );
   }
@@ -794,3 +799,38 @@ class CARET extends BinaryRight200 {
   }
 }
 // binaryRight200 }}}
+
+// unary200 {{{
+abstract class Unary200 extends BaseInvocationMatcher {
+  Unary200(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:unary200>", name),
+        PrologParser.RULE_unary200,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("rhs"));
+  }
+}
+
+class UnaryPLUS extends Unary200 {
+  UnaryPLUS(ParseTreePatternMatcher m) {
+    super("+", m);
+  }
+}
+
+class UnaryH extends Unary200 {
+  UnaryH(ParseTreePatternMatcher m) {
+    super("-", m);
+  }
+}
+
+class BSLASH extends Unary200 {
+  BSLASH(ParseTreePatternMatcher m) {
+    super("\\", m);
+  }
+}
+// unary200 }}}
