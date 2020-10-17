@@ -98,7 +98,18 @@ public interface InvocationMatcher {
         new XOR(m),
 
         // unary500
-        new Q(m)
+        new Q(m),
+
+        // binaryLeft400
+        new S(m),
+        new SLASH(m),
+        new SLASHSLASH(m),
+        new DIV(m),
+        new RDIV(m),
+        new LTLT(m),
+        new GTGT(m),
+        new REM(m),
+        new MOD(m)
 
         );
   }
@@ -652,3 +663,82 @@ class Q extends Unary500 {
   }
 }
 // unary500 }}}
+
+// binaryLeft400 {{{
+abstract class BinaryLeft400 extends BaseInvocationMatcher {
+  BinaryLeft400(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryLeft400> %s <rhs:binary200>", name),
+        PrologParser.RULE_binaryLeft400,
+        m);
+  }
+
+  BinaryLeft400(String name, String operator, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryLeft400> %s <rhs:binary200>", operator),
+        PrologParser.RULE_binaryLeft400,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class S extends BinaryLeft400 {
+  S(ParseTreePatternMatcher m) {
+    super("*", m);
+  }
+}
+
+class SLASH extends BinaryLeft400 {
+  SLASH(ParseTreePatternMatcher m) {
+    super("/", m);
+  }
+}
+
+class SLASHSLASH extends BinaryLeft400 {
+  SLASHSLASH(ParseTreePatternMatcher m) {
+    super("//", m);
+  }
+}
+
+class DIV extends BinaryLeft400 {
+  DIV(ParseTreePatternMatcher m) {
+    super("div", m);
+  }
+}
+
+class RDIV extends BinaryLeft400 {
+  RDIV(ParseTreePatternMatcher m) {
+    super("rdiv", m);
+  }
+}
+
+class LTLT extends BinaryLeft400 {
+  LTLT(ParseTreePatternMatcher m) {
+    super("<<", "`<`<", m);
+  }
+}
+
+class GTGT extends BinaryLeft400 {
+  GTGT(ParseTreePatternMatcher m) {
+    super(">>", "`>`>", m);
+  }
+}
+
+class REM extends BinaryLeft400 {
+  REM(ParseTreePatternMatcher m) {
+    super("rem", m);
+  }
+}
+
+class MOD extends BinaryLeft400 {
+  MOD(ParseTreePatternMatcher m) {
+    super("mod", m);
+  }
+}
+// binaryLeft400 }}}
