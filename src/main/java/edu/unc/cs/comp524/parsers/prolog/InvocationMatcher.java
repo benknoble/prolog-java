@@ -85,7 +85,10 @@ public interface InvocationMatcher {
         new AS(m),
         new IS(m),
         new GTCLT(m),
-        new CLT(m)
+        new CLT(m),
+
+        // binaryRight600
+        new C(m)
 
         );
   }
@@ -545,4 +548,27 @@ class CLT extends Binary700 {
     super(":<", ":`<", m);
   }
 }
-// }}}
+// binary700 }}}
+
+// binaryRight600 {{{
+abstract class BinaryRight600 extends BaseInvocationMatcher {
+  BinaryRight600(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("<lhs:binaryLeft500> %s <rhs:binaryRight600>", name),
+        PrologParser.RULE_binaryRight600,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("lhs"), m.get("rhs"));
+  }
+}
+
+class C extends BinaryRight600 {
+  C(ParseTreePatternMatcher m) {
+    super(":", m);
+  }
+}
+// binaryRight600 }}}
