@@ -31,6 +31,10 @@ public interface InvocationMatcher {
         new BinaryCEQ(m),
         new HARROW(m),
 
+        // unary1200
+        new UnaryCEQ(m),
+        new QH(m),
+
         // binary700
         new LT(m),
         new EQ(m),
@@ -112,6 +116,43 @@ class HARROW extends Binary1200 {
   }
 }
 // binary1200 }}}
+
+// unary1200 {{{
+abstract class Unary1200 extends BaseInvocationMatcher {
+  Unary1200(String name, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:unary1150>", name),
+        PrologParser.RULE_unary1200,
+        m);
+  }
+
+  Unary1200(String name, String operator, ParseTreePatternMatcher m) {
+    super(
+        name,
+        String.format("%s <rhs:unary1150>", operator),
+        PrologParser.RULE_unary1200,
+        m);
+  }
+
+  @Override
+  public List<ParseTree> getArgs(ParseTreeMatch m) {
+    return List.of(m.get("rhs"));
+  }
+}
+
+class UnaryCEQ extends Unary1200 {
+  UnaryCEQ(ParseTreePatternMatcher m) {
+    super(":-", m);
+  }
+}
+
+class QH extends Binary1200 {
+  QH(ParseTreePatternMatcher m) {
+    super("?-", m);
+  }
+}
+// unary1200 }}}
 
 // binary700 {{{
 abstract class Binary700 extends BaseInvocationMatcher {
