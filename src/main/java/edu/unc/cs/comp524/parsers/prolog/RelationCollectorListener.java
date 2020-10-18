@@ -116,7 +116,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
 
   private List<RuleInvocation> matchPattern(
       ParseTreePattern pattern,
-      PrologParser.TermlistContext body,
+      PrologParser.TermContext body,
       Function<ParseTreeMatch, ARuleInvocation> f)
   {
     return
@@ -134,7 +134,7 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
        .collect(Collectors.toList()));
   }
 
-  private List<RuleInvocation> invocations(PrologParser.TermlistContext body) {
+  private List<RuleInvocation> invocations(PrologParser.TermContext body) {
     return
       matchPattern(
           invocationPattern,
