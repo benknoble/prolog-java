@@ -101,8 +101,9 @@ public class PrintRubric {
         program.clauses().values().stream().flatMap(Collection::stream).count());
 
     // depth report
+    // System.err.println("depth report");
     // program.names().stream()
-    //   .forEach(n -> System.out.println(String.format(
+    //   .forEach(n -> System.err.println(String.format(
     //           "%s: %d",
     //           n,
     //           program.depth(n))));
@@ -130,7 +131,7 @@ public class PrintRubric {
      * smallDuration: 0
      * smallExhalation: 0
      * maxInterpolatedValue: 0
-     * givenSizes: 2
+     * givenSizes: 3
      * interpolatedSafe: 4
      * saferDuration: 2
      * minInterpolatedValue: 0
@@ -157,8 +158,8 @@ public class PrintRubric {
     //
     // program.names().stream().mapInt(program::depth).max();
     report("givenSizes depth",
-        2,
-        program.depth("givenSizes") / 2.0);
+        3,
+        program.depth("givenSizes") / 3.0);
 
     report("givenSafe depth",
         2,
