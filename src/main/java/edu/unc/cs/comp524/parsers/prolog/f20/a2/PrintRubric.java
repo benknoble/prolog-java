@@ -78,6 +78,15 @@ public class PrintRubric {
         //
         // but I figured using disallowed predicates should not earn any points…
         ? 1 : 0);
+    System.err.println("undefined, disallowed predicates");
+    System.err.println("------------------------------");
+    System.err.println(
+        program.undefined()
+        .stream()
+        .map(RuleInvocation::name)
+        .filter(n -> !allowed.contains(n))
+        .collect(Collectors.toSet()));
+    System.err.println("------------------------------");
 
     report("rules are commented",
         5,
