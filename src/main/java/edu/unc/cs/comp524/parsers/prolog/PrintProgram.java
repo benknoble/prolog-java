@@ -15,7 +15,7 @@ public class PrintProgram {
     var parser = new PrologParser(tokens);
     var tree = parser.p_text();
 
-    var collector = new RelationCollectorListener(tokens, parser);
+    var collector = new RelationCollectorListener(tokens, lexer, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
     System.out.println(collector.program());
   }

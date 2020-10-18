@@ -15,23 +15,34 @@ import org.antlr.v4.runtime.tree.pattern.*;
  * program()---otherwise you will get garbage.
  */
 public class RelationCollectorListener extends PrologListenerWithTokens {
+  private final PrologLexer lexer;
   private final PrologParser parser;
+
+  private final List<InvocationMatcher> matchers;
+
   private final ParseTreePattern factPattern;
   private final ParseTreePattern rulePattern;
   private final ParseTreePattern rule0Pattern;
   private final ParseTreePattern invocationPattern;
+
   private List<Relation> relations;
 
   public RelationCollectorListener(
       BufferedTokenStream tokens,
+      PrologLexer lexer,
       PrologParser parser)
   {
     super(tokens);
+    this.lexer = lexer;
     this.parser = parser;
+
+    matchers = InvocationMatcher.invocationMatchers(parser, lexer);
+
     factPattern = ParserUtils.factPattern(parser);
     rulePattern = ParserUtils.rulePattern(parser);
     rule0Pattern = ParserUtils.rule0Pattern(parser);
     invocationPattern = ParserUtils.invocationPattern(parser);
+
     relations = new ArrayList<>();
   }
 
@@ -136,12 +147,19 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
 
   private List<RuleInvocation> invocations(PrologParser.TermContext body) {
     return
-      matchPattern(
-          invocationPattern,
-          body,
-          m -> new ARuleInvocation(
-            (PrologParser.AtomContext)m.get("atom"),
-            (PrologParser.TermlistContext)m.get("termlist")));
+      ParserUtils.join(
+          // rule invocations
+          matchPattern(
+            invocationPattern,
+            body,
+            m -> new ARuleInvocation(
+              (PrologParser.AtomContext)m.get("atom"),
+              (PrologParser.TermlistContext)m.get("termlist"))),
+          // InvocationMatchers invocations
+          matchers
+          .stream()
+          .flatMap(m -> m.invocations(body).stream())
+          .collect(Collectors.toList()));
   }
 
 }

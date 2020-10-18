@@ -38,7 +38,7 @@ public class ProgramTest {
     var parser = new PrologParser(tokens);
     var tree = parser.p_text();
 
-    var collector = new RelationCollectorListener(tokens, parser);
+    var collector = new RelationCollectorListener(tokens, lexer, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
     program = collector.program();
   }
@@ -145,7 +145,7 @@ public class ProgramTest {
     var parser = new PrologParser(tokens);
     var tree = parser.p_text();
 
-    var collector = new RelationCollectorListener(tokens, parser);
+    var collector = new RelationCollectorListener(tokens, lexer, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
     var numProgram = collector.program();
     assertFalse(numProgram.noMagicNumbers());
@@ -158,7 +158,7 @@ public class ProgramTest {
     parser = new PrologParser(tokens);
     tree = parser.p_text();
 
-    collector = new RelationCollectorListener(tokens, parser);
+    collector = new RelationCollectorListener(tokens, lexer, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
     numProgram = collector.program();
     assertFalse(numProgram.noMagicNumbers());
@@ -171,7 +171,7 @@ public class ProgramTest {
     parser = new PrologParser(tokens);
     tree = parser.p_text();
 
-    collector = new RelationCollectorListener(tokens, parser);
+    collector = new RelationCollectorListener(tokens, lexer, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
     numProgram = collector.program();
     assertFalse(numProgram.noMagicNumbers());
@@ -184,7 +184,7 @@ public class ProgramTest {
     parser = new PrologParser(tokens);
     tree = parser.p_text();
 
-    collector = new RelationCollectorListener(tokens, parser);
+    collector = new RelationCollectorListener(tokens, lexer, parser);
     ParseTreeWalker.DEFAULT.walk(collector, tree);
     numProgram = collector.program();
     assertTrue(numProgram.noMagicNumbers());
