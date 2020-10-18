@@ -59,21 +59,21 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
         comment(ctx));
   }
 
-  // @Override
-  // public void enterPredicate(PrologParser.PredicateContext ctx) {
-  //   var ruleMatch = rulePattern.match(ctx);
-  //   var rule0Match = rule0Pattern.match(ctx);
-  //   if (ruleMatch.succeeded())
-  //     handleRule(
-  //         ruleMatch,
-  //         (PrologParser.ConjunctsContext)ctx.term(),
-  //         comment(ctx));
-  //   else if (rule0Match.succeeded())
-  //     handleRule0(
-  //         rule0Match,
-  //         (PrologParser.ConjunctsContext)ctx.term(),
-  //         comment(ctx));
-  // }
+  @Override
+  public void enterPredicate(PrologParser.PredicateContext ctx) {
+    var ruleMatch = rulePattern.match(ctx);
+    var rule0Match = rule0Pattern.match(ctx);
+    if (ruleMatch.succeeded())
+      handleRule(
+          ruleMatch,
+          ctx,
+          comment(ctx));
+    else if (rule0Match.succeeded())
+      handleRule0(
+          rule0Match,
+          ctx,
+          comment(ctx));
+  }
 
   private void handleFact(
       ParseTreeMatch match,
@@ -85,36 +85,34 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     relations.add(new AFact(name, args, comment));
   }
 
-  // private void handleRule(
-  //     ParseTreeMatch match,
-  //     PrologParser.ConjunctsContext ctx,
-  //     Optional<Comment> comment)
-  // {
-  //   var name = ctx.atom();
-  //   var args = ctx.termlist(0);
-  //   var body = ctx.termlist(1);
-  //   relations.add(new ARule(
-  //         name,
-  //         args,
-  //         comment,
-  //         ParserUtils.join(
-  //           invocations(body))));
-  // }
+  private void handleRule(
+      ParseTreeMatch match,
+      PrologParser.PredicateContext ctx,
+      Optional<Comment> comment)
+  {
+    var name = (PrologParser.AtomContext)(match.get("atom"));
+    var args = (PrologParser.TermlistContext)(match.get("termlist"));
+    var body = (PrologParser.TermContext)(match.get("term")); // ctx.term(1);
+    relations.add(new ARule(
+          name,
+          args,
+          comment,
+          invocations(body)));
+  }
 
-  // private void handleRule0(
-  //     ParseTreeMatch match,
-  //     PrologParser.ConjunctsContext ctx,
-  //     Optional<Comment> comment)
-  // {
-  //   var name = ctx.atom();
-  //   var body = ctx.termlist(0);
-  //   relations.add(new ARule(
-  //         name.getText(),
-  //         List.of(),
-  //         comment,
-  //         ParserUtils.join(
-  //           invocations(body))));
-  // }
+  private void handleRule0(
+      ParseTreeMatch match,
+      PrologParser.PredicateContext ctx,
+      Optional<Comment> comment)
+  {
+    var name = (PrologParser.AtomContext)(match.get("atom"));
+    var body = (PrologParser.TermContext)(match.get("term")); // ctx.term(1);
+    relations.add(new ARule(
+          name.getText(),
+          List.of(),
+          comment,
+          invocations(body)));
+  }
 
   private Optional<Comment> comment(PrologParser.ClauseContext ctx) {
     var comments = commentsToLeft(ctx);

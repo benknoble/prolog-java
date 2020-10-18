@@ -118,6 +118,7 @@ public class ProgramTest {
           ">",
           "is",
           "-",
+          ",",
           "bar"));
 
   }
