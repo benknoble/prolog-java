@@ -9,6 +9,10 @@ example](https://github.com/antlr/grammars-v4/blob/master/prolog/prolog.g4). The
 pre-built example is licensed under the BSD license, and redistribution with
 modifications are made in accordance with said license.
 
+All other sources (that is, those excluding
+`src/main/antlr4/edu/unc/cs/comp524/parsers/prolog/Prolog.g4`) are copyright
+2020 UNC.
+
 ANTLR version is **4.5.1**, not 4.8!
 
 ## About the build
