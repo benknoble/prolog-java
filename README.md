@@ -19,6 +19,14 @@ ANTLR version is **4.5.1**, not 4.8!
 
 Build with maven, using the ANTLR v4 plugin.
 
+I couldn't get javadoc to generate to `docs` with a pom configuration, so:
+
+```bash
+rm -r docs
+mvn javadoc:javadoc
+cp -r target/site/apidocs docs
+```
+
 ## Useful links about ANTLR4
 
 - [ANLTR4 runtime API](https://javadoc.io/static/org.antlr/antlr4-runtime/4.5.1/index.html?overview-summary.html)
