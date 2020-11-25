@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"edu.unc.cs.comp524.parsers.prolog"},{"l":"edu.unc.cs.comp524.parsers.prolog.f20.a2"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"edu.unc.cs.comp524.parsers.prolog"},{"l":"edu.unc.cs.comp524.parsers.prolog.f20"},{"l":"edu.unc.cs.comp524.parsers.prolog.f20.a2"}]
