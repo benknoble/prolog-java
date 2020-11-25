@@ -8,9 +8,30 @@ import java.util.regex.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * A prolog program.
+ * <p>
+ * Conceptually, a set of clauses keyed by name (cf. {@link Program#clauses}).
+ * <p>
+ * Supports various interrogation methods useful for static source or style
+ * checks.
+ * <p>
+ * Also provides various static utility methods for processing streams of {@link
+ * Relation}s.
+ */
 public interface Program {
+
+  /**
+   * The program's clauses.
+   * <p>
+   * A clause is identified by name; since prolog clauses support overloading by
+   * arity, each clause gives a list of possible {@link Relation}s.
+   */
   public Map<String, List<Relation>> clauses();
 
+  /**
+   * The arities of all clauses with a given name
+   */
   public default List<Integer> arity(String name) {
     return
       clauses()
@@ -20,10 +41,18 @@ public interface Program {
       .collect(Collectors.toList());
   }
 
+  /**
+   * The names of all clauses
+   */
   public default List<String> names() {
     return new ArrayList(clauses().keySet());
   }
 
+  /**
+   * All {@link Relation}s that have comments.
+   *
+   * @see Relation#comment
+   */
   public default List<Relation> relationsWithComments() {
     return
       relations()
@@ -31,6 +60,13 @@ public interface Program {
       .collect(Collectors.toList());
   }
 
+  /**
+   * True iff any of the clauses named {@code name} directly contains an
+   * invocation of itself.
+   *
+   * @see RuleInvocation#isInvocationOf
+   * @see #containsRecursive
+   */
   public default boolean isRecursive(String name) {
     var clauses = clauses().getOrDefault(name, List.of());
     return
@@ -38,6 +74,12 @@ public interface Program {
       .anyMatch(r -> r.rhs().stream().anyMatch(ri -> ri.isInvocationOf(r)));
   }
 
+  /**
+   * True iff any of the clauses named {@code name} contains an invocation to a
+   * recurisive clause.
+   *
+   * @see #isRecursive
+   */
   public default boolean containsRecursive(String name) {
     var clauses = clauses().getOrDefault(name, List.of());
     return
@@ -46,6 +88,13 @@ public interface Program {
       .anyMatch(this::isRecursive);
   }
 
+  /**
+   * A collection of {@link RuleInvocation}s of rules not defined anywhere in
+   * the program.
+   * <p>
+   * This can be useful when looking at what "standard" library functions were
+   * called, or disallowing them altogether.
+   */
   public default List<RuleInvocation> undefined() {
     var invocations = invocations(relations());
     /* collection necessary here to avoid issues with re-using a consumed
@@ -65,6 +114,23 @@ public interface Program {
       .collect(Collectors.toList());
   }
 
+  /**
+   * The "depth" of a named clause.
+   * <p>
+   * Implementations are free to define depth in any way.
+   * <p>
+   * The default implementation defines it thusly: the depth is an integer
+   * counting how many subrules are invoked until the tree "bottoms out" by
+   * invoking a fact with no subrules. Once a subrule is counted as invoked,
+   * other invocations of that subrule are ignored (to circumvent infinite loops
+   * in the case of recursion, mutual or otherwise) in that particular "path."
+   * <p>
+   * The actual depth is the maximum of all possible depths.
+   * <p>
+   * This is a stand-in measure for things like cyclomatic complexity and
+   * maximum runtime-depth, the latter of which cannot be computed statically
+   * (cf. Turing's Halting problem).
+   */
   public default int depth(String name) {
     var undefined =
       undefined()
@@ -102,6 +168,13 @@ public interface Program {
       .orElse(0);
   }
 
+  /**
+   * True iff the program contains no magic numbers
+   * <p>
+   * The default implementation defines that as "no rules have numeric literals
+   * that are not 0, 1, or 2; facts are permitted and encouraged to capture
+   * needed numeric constants."
+   */
   public default boolean noMagicNumbers() {
     return
       rules(relations())
@@ -134,6 +207,9 @@ public interface Program {
       .map(Integer::parseInt);
   }
 
+  /**
+   * Only the {@link Rule}s in the stream of {@link Relation}s
+   */
   public static Stream<Rule> rules(Stream<Relation> relations) {
     return
       relations
@@ -141,12 +217,20 @@ public interface Program {
       .map(r -> (Rule)r);
   }
 
+  /**
+   * All the {@link RuleInvocation}s on the right-hand-side of the
+   * {@link Rule}s in the stream of {@link Relation}s
+   * @see Rule#rhs
+   */
   public static Stream<RuleInvocation> invocations(Stream<Relation> relations) {
     return
       rules(relations)
       .flatMap(r -> r.rhs().stream());
   }
 
+  /**
+   * All the {@link Relation}s in the program
+   */
   public default Stream<Relation> relations() {
     return
       clauses()
