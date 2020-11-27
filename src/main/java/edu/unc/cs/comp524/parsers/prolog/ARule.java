@@ -5,6 +5,9 @@ import java.util.stream.*;
 
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * The default concrete {@link Rule} implementation.
+ */
 public final class ARule extends ARelation implements Rule {
   private final List<RuleInvocation> rhs;
 
@@ -33,6 +36,9 @@ public final class ARule extends ARelation implements Rule {
     return rhs;
   }
 
+  /**
+   * A JSON-like debugging-aid {@link String} representation.
+   */
   @Override
   public String toString() {
     return String.format(

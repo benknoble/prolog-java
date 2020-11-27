@@ -4,6 +4,9 @@ import java.util.*;
 
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * The default concrete {@link Fact} implementation.
+ */
 public final class AFact extends ARelation implements Fact {
   public AFact(
       final PrologParser.AtomContext atom,
