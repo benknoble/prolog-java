@@ -5,9 +5,18 @@ import java.util.stream.*;
 
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * The default concrete {@link RuleInvocation} implementation.
+ */
 public class ARuleInvocation implements RuleInvocation {
   private final Fact fact;
 
+  /**
+   * Constructor for use with {@link PrologParser}-related objects.
+   *
+   * @param atom Context from which to derive {@link #name}
+   * @param termlist Context from which to derive {@link #args}
+   */
   public ARuleInvocation(
       final PrologParser.AtomContext atom,
       final PrologParser.TermlistContext termlist)
@@ -57,6 +66,9 @@ public class ARuleInvocation implements RuleInvocation {
       && arity() == arity;
   }
 
+  /**
+   * A JSON-like debugging-aid {@link String} representation.
+   */
   @Override
   public String toString() {
     return String.format(
