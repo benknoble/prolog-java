@@ -3,6 +3,9 @@ package edu.unc.cs.comp524.parsers.prolog;
 import java.util.*;
 import java.util.stream.*;
 
+/**
+ * The default concrete {@link Program} implementation.
+ */
 public class AProgram implements Program {
   private final Map<String, List<Relation>> clauses;
 
@@ -21,6 +24,9 @@ public class AProgram implements Program {
     return clauses;
   }
 
+  /**
+   * A JSON-like debugging-aid {@link String} representation.
+   */
   @Override
   public String toString() {
     return String.format("{program: {\n%s\n}}",
