@@ -5,6 +5,9 @@ import java.util.stream.*;
 
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * Abstract super-class that handles most of the {@link Relation} details.
+ */
 public abstract class ARelation implements Relation {
 
   private final String name;
@@ -52,6 +55,9 @@ public abstract class ARelation implements Relation {
     return comment;
   }
 
+  /**
+   * A JSON-like debugging-aid {@link String} representation.
+   */
   @Override
   public String toString() {
     return String.format(
