@@ -14,6 +14,12 @@ public abstract class ARelation implements Relation {
   private final List<ParseTree> args;
   private final Optional<Comment> comment;
 
+  /**
+   * Constructor for use with {@link PrologParser}-related objects.
+   *
+   * @param atom Context from which to derive {@link #name}
+   * @param termlist Context from which to derive {@link #args}
+   */
   public ARelation(
       final PrologParser.AtomContext atom,
       final PrologParser.TermlistContext termlist,

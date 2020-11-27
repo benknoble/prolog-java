@@ -11,6 +11,12 @@ import org.antlr.v4.runtime.tree.*;
 public final class ARule extends ARelation implements Rule {
   private final List<RuleInvocation> rhs;
 
+  /**
+   * Constructor for use with {@link PrologParser}-related objects.
+   *
+   * @param atom Context from which to derive {@link #name}
+   * @param termlist Context from which to derive {@link #args}
+   */
   public ARule(
       final PrologParser.AtomContext atom,
       final PrologParser.TermlistContext termlist,
