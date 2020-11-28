@@ -9,6 +9,13 @@ import java.util.stream.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * The Fall-2020 Assignment 2 "Grader"
+ *<p>
+ * A sample program the demonstrates how to use {@link PrologParser} in tandem
+ * with {@link RelationCollectorListener} to build a {@link Program} on which
+ * methods can be called to generated grades for tests
+ */
 public class PrintRubric {
   public static void main(String[] args)
     throws IOException
