@@ -6,15 +6,85 @@ import java.util.stream.*;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.tree.pattern.*;
 
+/**
+ * A matcher against invocations of rules that knows how to process invocations
+ * and create {@link RuleInvocation}s.
+ * <p>
+ * Primarily used in {@link RelationCollectorListener} to match invocations in
+ * the body of predicates.
+ * <p>
+ * Implementation notes
+ * <p>
+ * See the source; there are many un-exposed classes that implement matchers for
+ * all the operators described in the grammer (cf. {@link #invocationMatchers}).
+ * <p>
+ * We use a custom {@link ParseTreePatternMatcher} with delimiters set by {@link
+ * ParseTreePatternMatcher#setDelimiters} to allow the use of slashes in the
+ * patterns.
+ * <p>
+ * The names of classes use a bit of shorthand:
+ * <ul>
+ * <li>C: colon (:)
+ * <li>H: hyphen (-)
+ * <li>Q: question mark (?)
+ * <li>SEMI: semi-colon (;)
+ * <li>BAR: bar or pipe (|)
+ * <li>HARROW: -&gt;
+ * <li>S: star (*)
+ * <li>EQ: equals (=)
+ * <li>NOT: prolog's not (\+)
+ * <li>LT: less-than (&lt;)
+ * <li>LEQ: less-than-equal (=&lt;)
+ * <li>D: dot (.)
+ * <li>AT: aerobase (@)
+ * <li>GT: greater-than (&gt;)
+ * <li>GEQ: greater-than-equal (&gt;=)
+ * <li>NEQ: not-equal (\=)
+ * <li>AND: and (/\)
+ * <li>OR: or (\/)
+ * <li>SLASH: slash (/)
+ * <li>CARET: caret (^)
+ * <li>BSLASH: backslash (\)
+ * <li>DOLLAR: dollar-sign ($)
+ * </ul>
+ * <p>
+ * Most others that are not built from this shorthand are represented by name
+ * directly (e.g., MOD for mod, DYNAMIC for dynamic).
+ */
 public interface InvocationMatcher {
+
+  /**
+   * The name of the rule the invocation matches
+   */
   public String name();
+
+  /**
+   * Computes the arguments of the invocation given a {@link
+   * org.antlr.v4.runtime.tree.pattern.ParseTreeMatch} created from {@link
+   * #pattern()}.
+   */
   public List<ParseTree> getArgs(ParseTreeMatch m);
+
+  /**
+   * The pattern to be used to match with
+   */
   public ParseTreePattern pattern();
 
+  /**
+   * Find all invocations in {@code tree}.
+   * <p>
+   * The default implementation is equivalent to {@link #invocations(ParseTree,
+   * String)}{@code (tree, "//*")}.
+   */
   public default List<RuleInvocation> invocations(ParseTree tree) {
     return invocations(tree, "//*");
   }
 
+  /**
+   * Find all invocations in {@code tree} that match {@code xpath}.
+   *
+   * @see ParseTreePattern#findAll
+   */
   public default List<RuleInvocation> invocations(ParseTree tree, String xpath) {
     return pattern().findAll(tree, xpath)
       .stream()
@@ -22,6 +92,11 @@ public interface InvocationMatcher {
       .collect(Collectors.toList());
   }
 
+  /**
+   * The default matchers for all operators defined in the grammar.
+   * <p>
+   * See implementation notes above and the source for their definition.
+   */
   public static List<InvocationMatcher> invocationMatchers(PrologParser p, PrologLexer l) {
     var m = new ParseTreePatternMatcher(l, p);
     m.setDelimiters("<", ">", "`");
