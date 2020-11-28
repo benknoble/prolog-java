@@ -8,11 +8,13 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.pattern.*;
 
 /**
+ * A {@link PrologListener} that collects a {@link Program} during a tree-walk.
+ * <p>
  * Use one instance of the listener per parse-tree you want to get the Program
  * of.
- *
- * Run the listener (e.g., via ParseTreeWalker.DEFAULT.walk) before calling
- * program()---otherwise you will get garbage.
+ *<p>
+ * Run the listener (e.g., via {@code ParseTreeWalker.DEFAULT.walk}) before
+ * calling {@link #program}---otherwise you will get garbage.
  */
 public class RelationCollectorListener extends PrologListenerWithTokens {
   private final PrologLexer lexer;
@@ -46,6 +48,9 @@ public class RelationCollectorListener extends PrologListenerWithTokens {
     relations = new ArrayList<>();
   }
 
+  /**
+   * The {@link Program} collected during the tree-walk.
+   */
   public Program program() {
     return new AProgram(relations);
   }
