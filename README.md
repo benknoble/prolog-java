@@ -22,10 +22,14 @@ Build with maven, using the ANTLR v4 plugin.
 I couldn't get javadoc to generate to `docs` with a pom configuration, so:
 
 ```bash
-rm -r docs
-mvn javadoc:javadoc
-cp -r target/site/apidocs docs
+mvn javadoc:javadoc && {
+  rm -r docs
+  cp -r target/site/apidocs docs
+}
 ```
+
+This can be wrapped in `git ls-files src/main/java/ | entr -cs` during
+documentation development.
 
 ## Useful links about ANTLR4
 
