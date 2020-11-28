@@ -7,6 +7,10 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.tree.pattern.*;
 
+/**
+ * A sample program using {@link PrologParser} and {@link ParserUtils} to print
+ * out fact and rule nodes
+ */
 public class PrintFacts
 {
   public static void main(String[] args)

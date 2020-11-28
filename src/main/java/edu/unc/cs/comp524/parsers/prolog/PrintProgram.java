@@ -5,6 +5,10 @@ import java.io.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
+/**
+ * A sample program using {@link PrologParser} and {@link
+ * RelationCollectorListener} to print out the collected {@link Program}.
+ */
 public class PrintProgram {
   public static void main(String[] args)
     throws IOException

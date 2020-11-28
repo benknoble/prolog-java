@@ -7,6 +7,10 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.tree.pattern.*;
 
+/**
+ * A sample program using {@link PrologParser}, {@link PrologBaseListener}, and
+ * {@link ParserUtils} to print out invocations of rules and operators.
+ */
 public class PrintInvocations
 {
   public static void main(String[] args)
